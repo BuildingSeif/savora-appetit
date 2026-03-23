@@ -3,504 +3,1318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OptiCook — Appetit Design Showcase</title>
+<title>OptiCook — Appetit Design Prototype</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
-    background: #0A0A0A;
+    background: #0D0D0D;
     font-family: 'Inter', -apple-system, sans-serif;
-    color: #fff;
-    padding: 40px 20px;
-  }
-
-  h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    text-align: center;
-    color: #D4A574;
-    margin-bottom: 8px;
-  }
-  .subtitle {
-    text-align: center;
-    color: #666;
-    font-size: 15px;
-    margin-bottom: 48px;
-  }
-
-  /* Section */
-  .section {
-    margin-bottom: 72px;
-  }
-  .section-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #E8832A;
-    margin-bottom: 8px;
-    padding-left: 8px;
-    border-left: 3px solid #E8832A;
-  }
-  .section-desc {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 32px;
-    padding-left: 11px;
-  }
-
-  /* Phone row */
-  .phone-row {
-    display: flex;
-    gap: 32px;
-    overflow-x: auto;
-    padding: 20px 0;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .phone-row::-webkit-scrollbar { display: none; }
-
-  .phone-frame {
-    flex-shrink: 0;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 32px 16px;
+    color: #fff;
+  }
+
+  /* ===== CONTROLS ===== */
+  .controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .controls button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 24px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    background: #222;
+    color: #888;
+  }
+  .controls button.active {
+    background: #E8832A;
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(232,131,42,0.4);
+  }
+  .controls button:hover { transform: scale(1.05); }
+  .mode-toggle {
+    background: #333 !important;
+    color: #fff !important;
+  }
+
+  h1.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: #D4A574;
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .page-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  /* ===== PHONE FRAME ===== */
+  .phone-container {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .phone-wrapper {
+    text-align: center;
   }
   .phone-label {
-    font-size: 12px;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    font-size: 13px;
+    color: #666;
     margin-bottom: 12px;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
-  .iphone {
-    width: 280px;
-    height: 606px;
-    border-radius: 36px;
-    border: 5px solid #2A2A2A;
+  .phone {
+    width: 375px;
+    height: 812px;
+    border-radius: 44px;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.06);
-    background: #000;
+    border: 6px solid #333;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
   }
-  .iphone::before {
+  .phone::before {
     content: '';
     position: absolute;
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 120px;
-    height: 28px;
+    width: 160px;
+    height: 34px;
     background: #000;
-    border-radius: 0 0 16px 16px;
-    z-index: 10;
+    border-radius: 0 0 20px 20px;
+    z-index: 1000;
   }
-  .iphone img {
+  .phone-screen {
     width: 100%;
     height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  /* ===== SHARED TOKENS ===== */
+  :root {
+    /* Dark */
+    --d-bg: #1A1208;
+    --d-bg2: #2A1F12;
+    --d-bg3: #3A2D1A;
+    --d-accent: #E8832A;
+    --d-accent2: #D4A574;
+    --d-text: #FFFFFF;
+    --d-text2: #B8A898;
+    --d-text3: #7A6E62;
+    --d-border: #3A2D1A;
+    --d-tab: #1E1610;
+    /* Light */
+    --l-bg: #FFF8F0;
+    --l-bg2: #FFF0E6;
+    --l-bg3: #FFE8D6;
+    --l-accent: #E8832A;
+    --l-accent2: #C4956A;
+    --l-text: #1A1208;
+    --l-text2: #6B5D52;
+    --l-text3: #9A8E84;
+    --l-border: #F0E0D0;
+    --l-tab: #FFF5ED;
+  }
+
+  .screen { display: none; width: 100%; min-height: 100%; }
+  .screen.active { display: block; }
+
+  /* ===== STATUS BAR ===== */
+  .status-bar {
+    height: 50px;
+    padding: 14px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* ========================================
+     ONBOARDING SCREEN
+     ======================================== */
+  .onboarding {
+    height: 812px;
+    position: relative;
+    overflow: hidden;
+  }
+  .onboarding-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 65%;
     object-fit: cover;
-    object-position: top;
+    width: 100%;
   }
-
-  /* Mode label */
-  .mode-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 8px;
+  .onboarding-gradient {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
   }
-  .mode-dark { background: #1A1208; color: #D4A574; border: 1px solid #3A2D1A; }
-  .mode-light { background: #FFF8F0; color: #6B5D52; border: 1px solid #F0E0D0; }
-
-  /* Comparison section */
-  .comparison {
-    display: flex;
-    gap: 48px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .comp-group {
+  .onboarding-logo {
+    position: absolute;
+    top: 60px;
+    width: 100%;
     text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    z-index: 5;
   }
-  .comp-group h3 {
+  .onboarding-content {
+    position: absolute;
+    bottom: 160px;
+    left: 32px;
+    right: 32px;
+    z-index: 5;
+  }
+  .onboarding-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    letter-spacing: -1px;
+  }
+  .onboarding-desc {
     font-size: 16px;
-    color: #999;
-    margin-bottom: 16px;
-    font-weight: 500;
+    line-height: 1.5;
+    opacity: 0.8;
   }
-  .comp-phones {
+  .onboarding-bottom {
+    position: absolute;
+    bottom: 60px;
+    left: 32px;
+    right: 32px;
     display: flex;
-    gap: 24px;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 5;
+  }
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    height: 8px;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+  .dot.active { width: 24px; }
+  .dot:not(.active) { width: 8px; }
+  .next-btn {
+    width: 56px; height: 56px;
+    border-radius: 28px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(232,131,42,0.4);
+  }
+  .skip-btn {
+    position: absolute;
+    top: 60px;
+    right: 24px;
+    font-size: 16px;
+    font-weight: 500;
+    z-index: 10;
+    background: none;
+    border: none;
+    cursor: pointer;
   }
 
-  /* Nicolas requirements callout */
-  .requirement-callout {
-    background: linear-gradient(135deg, rgba(232,131,42,0.1), rgba(232,131,42,0.05));
-    border: 1px solid rgba(232,131,42,0.2);
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-top: 16px;
-    max-width: 900px;
+  /* ========================================
+     HOME SCREEN
+     ======================================== */
+  .home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
   }
-  .req-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #E8832A;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  .home-avatar {
+    width: 40px; height: 40px;
+    border-radius: 20px;
+    object-fit: cover;
+  }
+  .home-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+  }
+  .home-search-icon {
+    width: 40px; height: 40px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .greeting {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.25;
+    padding: 0 24px;
+    margin-bottom: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  /* Category Pills */
+  .category-scroll {
+    display: flex;
+    gap: 8px;
+    padding: 0 24px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .category-scroll::-webkit-scrollbar { display: none; }
+  .cat-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 500;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  /* Frigo Banner */
+  .frigo-banner {
+    margin: 0 24px 28px;
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .frigo-banner:hover { transform: scale(1.02); }
+  .frigo-emoji { font-size: 32px; }
+  .frigo-text { flex: 1; }
+  .frigo-title { color: #fff; font-size: 18px; font-weight: 700; }
+  .frigo-desc { color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 2px; }
+  .frigo-arrow { color: #fff; font-size: 24px; font-weight: 300; }
+
+  /* Section Header */
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+  }
+  .view-all {
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* Chef List */
+  .chef-list {
+    display: flex;
+    gap: 20px;
+    padding: 0 24px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .chef-list::-webkit-scrollbar { display: none; }
+  .chef-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 72px;
+    flex-shrink: 0;
+  }
+  .chef-ring {
+    width: 64px; height: 64px;
+    border-radius: 32px;
+    border: 2px solid;
+    padding: 2px;
     margin-bottom: 6px;
   }
-  .req-text {
-    font-size: 13px;
-    color: #B8A898;
-    line-height: 1.6;
+  .chef-ring img {
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
   }
+  .chef-name { font-size: 13px; font-weight: 500; }
+  .chef-count { font-size: 11px; }
 
-  /* Flow labels */
-  .flow-name {
-    font-size: 11px;
-    color: #444;
-    margin-top: 8px;
-    text-align: center;
-    max-width: 280px;
+  /* Recipe Grid */
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 24px;
+    margin-bottom: 28px;
   }
-
-  /* Scrollable hint */
-  .scroll-hint {
+  .recipe-card {
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .recipe-card:hover { transform: scale(1.03); }
+  .recipe-card:nth-child(odd) { height: 240px; }
+  .recipe-card:nth-child(even) { height: 180px; }
+  .recipe-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .recipe-card .card-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(transparent, rgba(0,0,0,0.75));
+  }
+  .card-bookmark {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 12px;
-    color: #444;
-    text-align: right;
+  }
+  .time-badge {
+    position: absolute;
+    bottom: 50px; left: 10px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.5);
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+  }
+  .card-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px;
+  }
+  .card-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .dietary-tag {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    margin-top: 4px;
+    background: rgba(232,131,42,0.35);
+  }
+
+  /* Quick Recipes */
+  .quick-list {
+    display: flex;
+    gap: 12px;
+    padding: 0 24px;
+    margin-bottom: 28px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .quick-list::-webkit-scrollbar { display: none; }
+  .quick-card {
+    width: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .quick-card:hover { transform: scale(1.03); }
+  .quick-card img {
+    width: 100%; height: 110px;
+    object-fit: cover;
+  }
+  .quick-info { padding: 10px; }
+  .quick-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .quick-time { font-size: 12px; }
+
+  /* Tab Bar */
+  .tab-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 10px 0 28px;
+    border-top: 0.5px solid;
+    z-index: 50;
+  }
+  .tab-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 56px;
+    font-size: 22px;
+    cursor: pointer;
+  }
+  .tab-label {
+    font-size: 10px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .tab-fab {
+    width: 56px; height: 56px;
+    border-radius: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-top: -30px;
+    box-shadow: 0 4px 16px rgba(232,131,42,0.4);
+    cursor: pointer;
+  }
+
+  /* ========================================
+     RECIPE DETAIL SCREEN
+     ======================================== */
+  .recipe-hero {
+    width: 100%;
+    height: 320px;
+    position: relative;
+  }
+  .recipe-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .recipe-hero-gradient {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+  }
+  .recipe-top-bar {
+    position: absolute;
+    top: 50px; left: 16px; right: 16px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+  }
+  .recipe-top-btn {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+  }
+  .recipe-top-right { display: flex; gap: 8px; }
+
+  /* Chef Row */
+  .chef-row {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    margin-top: -16px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 5;
+  }
+  .chef-row img {
+    width: 36px; height: 36px;
+    border-radius: 18px;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+  .chef-info { flex: 1; }
+  .chef-info-name { font-size: 13px; font-weight: 500; }
+  .rating-row { display: flex; align-items: center; gap: 4px; }
+  .rating-star { color: #FFB800; font-size: 14px; }
+  .rating-text { font-size: 12px; }
+  .follow-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .recipe-title-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    letter-spacing: -0.5px;
+    padding: 0 24px;
+    margin-bottom: 4px;
+  }
+  .recipe-subtitle-text {
+    font-size: 14px;
+    padding: 0 24px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+  }
+
+  /* Stats Row */
+  .stats-row {
+    display: flex;
+    margin: 0 24px 20px;
+    border-radius: 16px;
+    padding: 16px;
+    border: 0.5px solid;
+  }
+  .stat-item {
+    flex: 1;
+    text-align: center;
+  }
+  .stat-emoji { font-size: 18px; margin-bottom: 4px; }
+  .stat-value { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+  .stat-label-text { font-size: 11px; }
+  .stat-divider {
+    width: 0.5px;
+    align-self: stretch;
+  }
+
+  /* Tab Switch */
+  .tab-switch {
+    display: flex;
+    margin: 0 24px 20px;
+    border-radius: 12px;
+    padding: 4px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  /* Ingredients */
+  .ingredient-row {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    margin: 0 24px 8px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .ingredient-row:hover { transform: scale(1.01); }
+  .ing-emoji {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .ing-name { flex: 1; font-size: 15px; font-weight: 500; }
+  .ing-qty { font-size: 13px; margin-right: 12px; }
+  .ing-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 1.5px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* Directions */
+  .direction-item {
+    display: flex;
+    padding: 0 24px;
+    margin-bottom: 20px;
+  }
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    margin-right: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .direction-text {
+    font-size: 15px;
+    line-height: 1.5;
     margin-bottom: 8px;
+  }
+  .step-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-time { font-size: 12px; }
+  .timer-btn {
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Gallery */
+  .gallery-list {
+    display: flex;
+    gap: 10px;
+    padding: 0 24px;
+    margin-bottom: 24px;
+    overflow-x: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .gallery-list::-webkit-scrollbar { display: none; }
+  .gallery-list img {
+    width: 100px; height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  /* Nutrition */
+  .nutrition-card {
+    margin: 0 24px 24px;
+    border-radius: 16px;
+    padding: 18px;
+    border: 0.5px solid;
+  }
+  .nutrition-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
+  .nutrition-row {
+    display: flex;
+    justify-content: space-around;
+  }
+  .nut-item { text-align: center; }
+  .nut-value { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+  .nut-label { font-size: 12px; }
+
+  /* Grocery Button */
+  .grocery-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    margin: 8px 24px 24px;
+    border-radius: 12px;
+    border: 1px solid;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    width: calc(100% - 48px);
+  }
+
+  /* Start Cooking */
+  .start-cooking-bar {
+    position: sticky;
+    bottom: 0;
+    padding: 16px 24px 36px;
+    z-index: 50;
+  }
+  .start-cooking-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 24px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 20px rgba(232,131,42,0.4);
+    transition: transform 0.2s;
+  }
+  .start-cooking-btn:hover { transform: scale(1.02); }
+
+  /* Ingredient Count */
+  .ing-count {
+    padding: 0 24px;
+    margin-bottom: 12px;
+    font-size: 13px;
   }
 </style>
 </head>
 <body>
 
-<h1>Appetit UI Kit for OptiCook</h1>
-<p class="subtitle">Dark & Light Mode comparison — Scroll horizontally to see all screens</p>
+<h1 class="page-title">OptiCook Design Prototype</h1>
+<p class="page-subtitle">Appetit UI Kit adaptation — Dark & Light Mode — Tap screens to navigate</p>
 
-<!-- ============ ONBOARDING ============ -->
-<div class="section">
-  <div class="section-title">Onboarding & Welcome</div>
-  <div class="section-desc">First impression. Full-bleed food photography with serif headlines.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Welcome / Splash</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Welcome.png" alt="Welcome Dark"></div>
-      <div class="flow-name">Brand splash with orbital animation</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Onboarding Slide</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Onboarding1.png" alt="Onboarding Dark"></div>
-      <div class="flow-name">Product tour — Share Your Recipes</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Onboarding Slide 2</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Onboarding2.png" alt="Onboarding 2 Dark"></div>
-      <div class="flow-name">Product tour — Discover</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Welcome / Splash</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Welcome.png" alt="Welcome Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Onboarding Slide</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Onboarding1.png" alt="Onboarding Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-  <div class="requirement-callout">
-    <div class="req-label">Nicolas Requirements Addressed</div>
-    <div class="req-text">
-      #8 Onboarding (prefs, allergies, equipment, skill) — Adapt these slides to showcase: AI Voice Chef ("OK Chef"), World Cuisines, Cooking Mode, Progression System.<br>
-      #22 App needs NEW NAME — Replace "Appetit" with chosen brand (Savora/Forno).
+<!-- Controls -->
+<div class="controls">
+  <button class="active" onclick="showScreen('onboarding')">Onboarding</button>
+  <button onclick="showScreen('home')">Home</button>
+  <button onclick="showScreen('recipe')">Recipe Detail</button>
+  <button class="mode-toggle" onclick="toggleMode()">🌙 Toggle Dark/Light</button>
+</div>
+
+<div class="phone-container" id="phoneContainer">
+  <!-- PHONE 1 -->
+  <div class="phone-wrapper">
+    <div class="phone-label" id="modeLabel">Dark Mode</div>
+    <div class="phone" id="phone1">
+      <div class="phone-screen" id="phoneScreen">
+
+        <!-- ==================== ONBOARDING ==================== -->
+        <div class="screen active" id="screen-onboarding">
+          <div class="onboarding" id="onboardingSlide">
+            <img class="onboarding-bg" src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=1000&fit=crop" alt="">
+            <div class="onboarding-gradient" id="onboGradient"></div>
+            <div class="onboarding-logo" id="onboLogo">Savora</div>
+            <button class="skip-btn" id="onboSkip">Skip</button>
+            <div class="onboarding-content">
+              <div class="onboarding-title" id="onboTitle">Your AI<br>Kitchen Chef</div>
+              <div class="onboarding-desc" id="onboDesc">Say "OK Chef" and cook hands-free with voice-guided step-by-step instructions.</div>
+            </div>
+            <div class="onboarding-bottom">
+              <div class="dots">
+                <div class="dot active" id="dot1"></div>
+                <div class="dot" id="dot2"></div>
+                <div class="dot" id="dot3"></div>
+              </div>
+              <button class="next-btn" id="onboNext" onclick="nextSlide()">→</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== HOME ==================== -->
+        <div class="screen" id="screen-home">
+          <div class="home-header">
+            <img class="home-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" alt="">
+            <div class="home-logo" id="homeLogo">Savora</div>
+            <div class="home-search-icon" id="homeSearchIcon">🔍</div>
+          </div>
+          <div class="greeting" id="homeGreeting">What do you want<br>to cook today?</div>
+
+          <div class="category-scroll" id="catScroll">
+            <div class="cat-pill cat-active" id="cat-1">🍽️ All</div>
+            <div class="cat-pill" id="cat-2">🥐 French</div>
+            <div class="cat-pill" id="cat-3">🍛 Indian</div>
+            <div class="cat-pill" id="cat-4">🍝 Italian</div>
+            <div class="cat-pill" id="cat-5">🍣 Japanese</div>
+            <div class="cat-pill" id="cat-6">🌮 Mexican</div>
+          </div>
+
+          <div class="frigo-banner" id="frigoBanner">
+            <div class="frigo-emoji">🧊</div>
+            <div class="frigo-text">
+              <div class="frigo-title">Frigo Magique</div>
+              <div class="frigo-desc">Tell us what's in your fridge, we'll find the recipe</div>
+            </div>
+            <div class="frigo-arrow">→</div>
+          </div>
+
+          <div class="section-header">
+            <div class="section-title" id="chefSectionTitle">Top Chefs</div>
+            <div class="view-all" id="chefViewAll">view all</div>
+          </div>
+          <div class="chef-list">
+            <div class="chef-item">
+              <div class="chef-ring" id="chefRing1"><img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=100&h=100&fit=crop" alt=""></div>
+              <div class="chef-name" id="chefName1">Antoine</div>
+              <div class="chef-count" id="chefCount1">156 recipes</div>
+            </div>
+            <div class="chef-item">
+              <div class="chef-ring" id="chefRing2"><img src="https://images.unsplash.com/photo-1595257841889-eca2678571e7?w=100&h=100&fit=crop" alt=""></div>
+              <div class="chef-name" id="chefName2">Priya</div>
+              <div class="chef-count" id="chefCount2">203 recipes</div>
+            </div>
+            <div class="chef-item">
+              <div class="chef-ring" id="chefRing3"><img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=100&h=100&fit=crop" alt=""></div>
+              <div class="chef-name" id="chefName3">Yuki</div>
+              <div class="chef-count" id="chefCount3">134 recipes</div>
+            </div>
+            <div class="chef-item">
+              <div class="chef-ring" id="chefRing4"><img src="https://images.unsplash.com/photo-1583394293214-28ece3fd7fc?w=100&h=100&fit=crop" alt=""></div>
+              <div class="chef-name" id="chefName4">Marco</div>
+              <div class="chef-count" id="chefCount4">89 recipes</div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <div class="section-title" id="popularTitle">Popular Recipes</div>
+            <div class="view-all" id="popularViewAll">view all</div>
+          </div>
+          <div class="recipe-grid">
+            <div class="recipe-card" onclick="showScreen('recipe')">
+              <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400&h=500&fit=crop" alt="">
+              <div class="card-overlay"></div>
+              <div class="card-bookmark" id="bm1" style="background: #E8832A;">🔖</div>
+              <div class="time-badge">⏱ 45 min</div>
+              <div class="card-bottom">
+                <div class="card-title">Coq au Vin Classique</div>
+                <div class="dietary-tag">Halal</div>
+              </div>
+            </div>
+            <div class="recipe-card" onclick="showScreen('recipe')">
+              <img src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=300&fit=crop" alt="">
+              <div class="card-overlay"></div>
+              <div class="card-bookmark" style="background: rgba(255,255,255,0.2);">🏷️</div>
+              <div class="time-badge">⏱ 35 min</div>
+              <div class="card-bottom">
+                <div class="card-title">Butter Chicken Masala</div>
+                <div class="dietary-tag">Halal</div>
+              </div>
+            </div>
+            <div class="recipe-card" onclick="showScreen('recipe')">
+              <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=500&fit=crop" alt="">
+              <div class="card-overlay"></div>
+              <div class="card-bookmark" style="background: rgba(255,255,255,0.2);">🏷️</div>
+              <div class="time-badge">⏱ 30 min</div>
+              <div class="card-bottom">
+                <div class="card-title">Risotto aux Champignons</div>
+                <div class="dietary-tag">Vegetarian</div>
+              </div>
+            </div>
+            <div class="recipe-card" onclick="showScreen('recipe')">
+              <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop" alt="">
+              <div class="card-overlay"></div>
+              <div class="card-bookmark" id="bm4" style="background: #E8832A;">🔖</div>
+              <div class="time-badge">⏱ 55 min</div>
+              <div class="card-bottom">
+                <div class="card-title">Tarte Tatin aux Pommes</div>
+                <div class="dietary-tag">Vegetarian</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <div class="section-title" id="quickTitle">Quick & Easy</div>
+            <div class="view-all" id="quickViewAll">view all</div>
+          </div>
+          <div class="quick-list">
+            <div class="quick-card" id="quickCard1">
+              <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop" alt="">
+              <div class="quick-info">
+                <div class="quick-title" id="qt1">Salade Nicoise</div>
+                <div class="quick-time" id="qtm1">⏱ 15 min</div>
+              </div>
+            </div>
+            <div class="quick-card" id="quickCard2">
+              <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=300&fit=crop" alt="">
+              <div class="quick-info">
+                <div class="quick-title" id="qt2">Croque Monsieur</div>
+                <div class="quick-time" id="qtm2">⏱ 10 min</div>
+              </div>
+            </div>
+            <div class="quick-card" id="quickCard3">
+              <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop" alt="">
+              <div class="quick-info">
+                <div class="quick-title" id="qt3">Soupe a l'Oignon</div>
+                <div class="quick-time" id="qtm3">⏱ 20 min</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height: 100px;"></div>
+
+          <!-- Tab Bar -->
+          <div class="tab-bar" id="tabBar">
+            <div class="tab-item">
+              <span>🏠</span>
+              <span class="tab-label" id="tabHome" style="color: #E8832A;">Home</span>
+            </div>
+            <div class="tab-item">
+              <span>🔍</span>
+              <span class="tab-label" id="tabDiscover">Discover</span>
+            </div>
+            <div class="tab-fab" id="tabFab" style="background: #E8832A;">🎙️</div>
+            <div class="tab-item">
+              <span>📅</span>
+              <span class="tab-label" id="tabMenu">Menu</span>
+            </div>
+            <div class="tab-item">
+              <span>👤</span>
+              <span class="tab-label" id="tabProfile">Profile</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== RECIPE DETAIL ==================== -->
+        <div class="screen" id="screen-recipe">
+          <div class="recipe-hero">
+            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&h=600&fit=crop" alt="">
+            <div class="recipe-hero-gradient" id="recipeHeroGrad"></div>
+            <div class="recipe-top-bar">
+              <button class="recipe-top-btn" onclick="showScreen('home')">←</button>
+              <div class="recipe-top-right">
+                <button class="recipe-top-btn">♡</button>
+                <button class="recipe-top-btn" style="background: #E8832A;">🔖</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="chef-row">
+            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=100&h=100&fit=crop" alt="">
+            <div class="chef-info">
+              <div class="chef-info-name" id="recipeChefName">Chef Antoine Dubois</div>
+              <div class="rating-row">
+                <span class="rating-star">★</span>
+                <span class="rating-text" id="recipeRating">4.8 (234 reviews)</span>
+              </div>
+            </div>
+            <button class="follow-btn" id="followBtn" style="background: #E8832A;">Follow</button>
+          </div>
+
+          <div class="recipe-title-text" id="recipeTitleText">Coq au Vin Classique</div>
+          <div class="recipe-subtitle-text" id="recipeSubtitleText">A timeless French braised chicken in red wine</div>
+
+          <div class="stats-row" id="statsRow">
+            <div class="stat-item">
+              <div class="stat-emoji">⏱</div>
+              <div class="stat-value" id="sv1">45 min</div>
+              <div class="stat-label-text" id="sl1">Cook</div>
+            </div>
+            <div class="stat-divider" id="sd1"></div>
+            <div class="stat-item">
+              <div class="stat-emoji">🍽️</div>
+              <div class="stat-value" id="sv2">4</div>
+              <div class="stat-label-text" id="sl2">Servings</div>
+            </div>
+            <div class="stat-divider" id="sd2"></div>
+            <div class="stat-item">
+              <div class="stat-emoji">🔥</div>
+              <div class="stat-value" id="sv3">520</div>
+              <div class="stat-label-text" id="sl3">Calories</div>
+            </div>
+            <div class="stat-divider" id="sd3"></div>
+            <div class="stat-item">
+              <div class="stat-emoji">📊</div>
+              <div class="stat-value" id="sv4">Medium</div>
+              <div class="stat-label-text" id="sl4">Level</div>
+            </div>
+          </div>
+
+          <div class="tab-switch" id="tabSwitch">
+            <button class="tab-btn tab-btn-active" id="tabIng" onclick="switchTab('ingredients')">Ingredients</button>
+            <button class="tab-btn" id="tabDir" onclick="switchTab('directions')">Directions</button>
+          </div>
+
+          <div id="ingredientsSection">
+            <div class="ing-count" id="ingCount">12 items</div>
+            <div class="ingredient-row" id="ir1"><div class="ing-emoji" id="ie1">🍗</div><div class="ing-name" id="in1">Chicken</div><div class="ing-qty" id="iq1">1.5 kg</div><div class="ing-check" id="ic1"></div></div>
+            <div class="ingredient-row" id="ir2"><div class="ing-emoji" id="ie2">🍷</div><div class="ing-name" id="in2">Red wine</div><div class="ing-qty" id="iq2">750 ml</div><div class="ing-check" id="ic2"></div></div>
+            <div class="ingredient-row" id="ir3"><div class="ing-emoji" id="ie3">🥕</div><div class="ing-name" id="in3">Carrots</div><div class="ing-qty" id="iq3">3 pcs</div><div class="ing-check" id="ic3"></div></div>
+            <div class="ingredient-row" id="ir4"><div class="ing-emoji" id="ie4">🧅</div><div class="ing-name" id="in4">Onion</div><div class="ing-qty" id="iq4">2 pcs</div><div class="ing-check" id="ic4"></div></div>
+            <div class="ingredient-row" id="ir5"><div class="ing-emoji" id="ie5">🧄</div><div class="ing-name" id="in5">Garlic</div><div class="ing-qty" id="iq5">4 cloves</div><div class="ing-check" id="ic5"></div></div>
+            <div class="ingredient-row" id="ir6"><div class="ing-emoji" id="ie6">🍄</div><div class="ing-name" id="in6">Mushrooms</div><div class="ing-qty" id="iq6">200 g</div><div class="ing-check" id="ic6"></div></div>
+            <div class="ingredient-row" id="ir7"><div class="ing-emoji" id="ie7">🌿</div><div class="ing-name" id="in7">Thyme</div><div class="ing-qty" id="iq7">3 sprigs</div><div class="ing-check" id="ic7"></div></div>
+            <div class="ingredient-row" id="ir8"><div class="ing-emoji" id="ie8">🍃</div><div class="ing-name" id="in8">Bay leaves</div><div class="ing-qty" id="iq8">2 pcs</div><div class="ing-check" id="ic8"></div></div>
+            <div class="ingredient-row" id="ir9"><div class="ing-emoji" id="ie9">🧈</div><div class="ing-name" id="in9">Butter</div><div class="ing-qty" id="iq9">30 g</div><div class="ing-check" id="ic9"></div></div>
+            <div class="ingredient-row" id="ir10"><div class="ing-emoji" id="ie10">🌾</div><div class="ing-name" id="in10">Flour</div><div class="ing-qty" id="iq10">2 tbsp</div><div class="ing-check" id="ic10"></div></div>
+            <button class="grocery-btn" id="groceryBtn">🛒 Add all to grocery list</button>
+          </div>
+
+          <div id="directionsSection" style="display:none;">
+            <div class="direction-item">
+              <div class="step-num" style="background:#E8832A;">1</div>
+              <div>
+                <div class="direction-text" id="dt1">Season the chicken pieces with salt and pepper. Dust lightly with flour.</div>
+                <div class="step-meta"><span class="step-time" id="stm1">⏱ 5 min</span><button class="timer-btn" id="tb1">Set Timer</button></div>
+              </div>
+            </div>
+            <div class="direction-item">
+              <div class="step-num" style="background:#E8832A;">2</div>
+              <div>
+                <div class="direction-text" id="dt2">In a large Dutch oven, cook the bacon until crispy. Remove and set aside.</div>
+                <div class="step-meta"><span class="step-time" id="stm2">⏱ 5 min</span><button class="timer-btn" id="tb2">Set Timer</button></div>
+              </div>
+            </div>
+            <div class="direction-item">
+              <div class="step-num" style="background:#E8832A;">3</div>
+              <div>
+                <div class="direction-text" id="dt3">Brown the chicken pieces in the bacon fat on all sides until golden.</div>
+                <div class="step-meta"><span class="step-time" id="stm3">⏱ 10 min</span><button class="timer-btn" id="tb3">Set Timer</button></div>
+              </div>
+            </div>
+            <div class="direction-item">
+              <div class="step-num" style="background:#E8832A;">4</div>
+              <div>
+                <div class="direction-text" id="dt4">Pour in the red wine, scraping up the browned bits. Add thyme and bay leaves. Return chicken and simmer 35 min.</div>
+                <div class="step-meta"><span class="step-time" id="stm4">⏱ 35 min</span><button class="timer-btn" id="tb4">Set Timer</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header" style="margin-top: 8px;">
+            <div class="section-title" id="galTitle">Gallery</div>
+            <div class="view-all" id="galViewAll">View All</div>
+          </div>
+          <div class="gallery-list">
+            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&h=200&fit=crop" alt="">
+            <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&h=200&fit=crop" alt="">
+            <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=200&h=200&fit=crop" alt="">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop" alt="">
+          </div>
+
+          <div class="nutrition-card" id="nutCard">
+            <div class="nutrition-title" id="nutTitle">Nutrition per serving</div>
+            <div class="nutrition-row">
+              <div class="nut-item"><div class="nut-value" id="nv1" style="color:#E8832A;">520</div><div class="nut-label" id="nl1">kcal</div></div>
+              <div class="nut-item"><div class="nut-value" id="nv2">42g</div><div class="nut-label" id="nl2">Protein</div></div>
+              <div class="nut-item"><div class="nut-value" id="nv3">18g</div><div class="nut-label" id="nl3">Carbs</div></div>
+              <div class="nut-item"><div class="nut-value" id="nv4">24g</div><div class="nut-label" id="nl4">Fat</div></div>
+            </div>
+          </div>
+
+          <div class="start-cooking-bar" id="cookBar">
+            <button class="start-cooking-btn" id="cookBtn" style="background:#E8832A;">🎙️ Start Cooking</button>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ============ AUTH & SETUP ============ -->
-<div class="section">
-  <div class="section-title">Authentication & Setup</div>
-  <div class="section-desc">Registration, preferences selection with floating food bubbles.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Register</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Register.png" alt="Register Dark"></div>
-      <div class="flow-name">Email + Google + Apple auth</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Cuisine Preferences</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/SetupPreferences.png" alt="Setup Dark"></div>
-      <div class="flow-name">Floating bubble selection</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Register</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Register.png" alt="Register Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Cuisine Preferences</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/SetupPreferences.png" alt="Setup Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-  <div class="requirement-callout">
-    <div class="req-label">Nicolas Requirements Addressed</div>
-    <div class="req-text">
-      #8 Onboarding preferences, allergies, equipment, skill level.<br>
-      #10 Religious/dietary filtering (Hindu, Halal, Jain) — Add as bubble options alongside cuisine preferences.<br>
-      #9 Indian recipes by region — Add regional sub-selection after "Indian" is chosen.
-    </div>
-  </div>
-</div>
+<script>
+let currentMode = 'dark';
+let currentSlide = 0;
 
-<!-- ============ HOME ============ -->
-<div class="section">
-  <div class="section-title">Home Feed</div>
-  <div class="section-desc">Main screen with category pills, chef carousel, recipe grid, and bottom tab bar with voice FAB.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Home — Style 1</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Home1.png" alt="Home 1 Dark"></div>
-      <div class="flow-name">Primary home layout</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Home — Style 2</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Home2.png" alt="Home 2 Dark"></div>
-      <div class="flow-name">Alternative home layout</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Home — Style 1</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Home1.png" alt="Home 1 Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Home — Style 2</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Home2.png" alt="Home 2 Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-  <div class="requirement-callout">
-    <div class="req-label">Nicolas Requirements Addressed</div>
-    <div class="req-text">
-      #3 Recipe catalog with search and filters — Category pills + recipe grid.<br>
-      #12 Search by product — Add "Frigo Magique" banner above recipe grid.<br>
-      #1 "OK Chef" voice — Center FAB becomes mic/voice button instead of "+".<br>
-      #49 Gamification — Add streak counter widget to home header.
-    </div>
-  </div>
-</div>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  // Reset scroll
+  document.getElementById('phoneScreen').scrollTop = 0;
+}
 
-<!-- ============ DISCOVER & SEARCH ============ -->
-<div class="section">
-  <div class="section-title">Discover & Search</div>
-  <div class="section-desc">Staggered recipe grid for browsing, and search with filters.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Discover</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Discover.png" alt="Discover Dark"></div>
-      <div class="flow-name">Browse recipes + filter tabs</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Search</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Search.png" alt="Search Dark"></div>
-      <div class="flow-name">Search with keyboard</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Discover</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Discover.png" alt="Discover Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Search</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Search.png" alt="Search Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-</div>
+const slides = [
+  { title: 'Your AI<br>Kitchen Chef', desc: 'Say "OK Chef" and cook hands-free with voice-guided step-by-step instructions.', img: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=1000&fit=crop' },
+  { title: 'Discover<br>World Cuisines', desc: 'From French classics to Indian spices. Personalized recipes from 120+ countries.', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=1000&fit=crop' },
+  { title: 'Cook Like<br>a Pro', desc: 'Level up your skills with Duolingo-style learning paths and earn badges.', img: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&h=1000&fit=crop' },
+];
 
-<!-- ============ RECIPE DETAIL ============ -->
-<div class="section">
-  <div class="section-title">Recipe Detail — THE MONEY SCREEN</div>
-  <div class="section-desc">Nicolas said: "like reading a beautiful cookbook." Hero image, ingredients with emoji, directions, gallery.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Recipe — Full View</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeDetail.png" alt="Recipe Dark"></div>
-      <div class="flow-name">Hero + chef + stats + ingredients + gallery</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Ingredients List</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeIngredients.png" alt="Ingredients Dark"></div>
-      <div class="flow-name">Checklist with emoji + quantities</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Directions</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeDirections.png" alt="Directions Dark"></div>
-      <div class="flow-name">Step-by-step instructions</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Recipe — Full View</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/RecipeDetail.png" alt="Recipe Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Ingredients List</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/RecipeIngredients.png" alt="Ingredients Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Directions</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/RecipeDirections.png" alt="Directions Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-  <div class="requirement-callout">
-    <div class="req-label">Nicolas Requirements Addressed</div>
-    <div class="req-text">
-      #17 "Reading a beautiful cookbook" — This IS the cookbook feel. Warm photography, serif titles, ingredient images.<br>
-      #11 Ingredients = RAW products only — Clean emoji + name + quantity rows, no sub-ingredients.<br>
-      #2 Step-by-step cooking mode — Directions screen with numbered steps. Add "Start Cooking" button for immersive mode.<br>
-      #7 Timer system — Add timer button per step.
-    </div>
-  </div>
-</div>
+function nextSlide() {
+  currentSlide = (currentSlide + 1) % slides.length;
+  const s = slides[currentSlide];
+  document.querySelector('.onboarding-bg').src = s.img;
+  document.getElementById('onboTitle').innerHTML = s.title;
+  document.getElementById('onboDesc').textContent = s.desc;
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+}
 
-<!-- ============ PROFILE & SOCIAL ============ -->
-<div class="section">
-  <div class="section-title">Profile, Notifications & Social</div>
-  <div class="section-desc">User profile with cover photo, recipe collections, notification feed, live cooking.</div>
-  <div class="scroll-hint">scroll →</div>
-  <div class="phone-row">
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Profile</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Profile.png" alt="Profile Dark"></div>
-      <div class="flow-name">Cover + avatar + stats + recipes</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Account / Collections</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Account.png" alt="Account Dark"></div>
-      <div class="flow-name">My cookbooks and saved recipes</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Notifications</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Notification.png" alt="Notification Dark"></div>
-      <div class="flow-name">Activity feed</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-dark">Dark</span>
-      <div class="phone-label">Live Cooking</div>
-      <div class="iphone"><img src="appetit-ui-kit/dark/Live.png" alt="Live Dark"></div>
-      <div class="flow-name">Repurpose for Cooking Mode</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Profile</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Profile.png" alt="Profile Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-    <div class="phone-frame">
-      <span class="mode-badge mode-light">Light</span>
-      <div class="phone-label">Notifications</div>
-      <div class="iphone"><img src="appetit-ui-kit/light/Notification.png" alt="Notification Light"></div>
-      <div class="flow-name">Light mode variant</div>
-    </div>
-  </div>
-</div>
+function switchTab(tab) {
+  if (tab === 'ingredients') {
+    document.getElementById('ingredientsSection').style.display = 'block';
+    document.getElementById('directionsSection').style.display = 'none';
+  } else {
+    document.getElementById('ingredientsSection').style.display = 'none';
+    document.getElementById('directionsSection').style.display = 'block';
+  }
+  applyMode();
+}
 
-<!-- ============ SUMMARY ============ -->
-<div class="section" style="max-width: 900px; margin: 0 auto;">
-  <div class="section-title">Design Decision Summary</div>
-  <div class="section-desc">What this UI Kit gives us vs. what the current design has.</div>
-  <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
-    <thead>
-      <tr style="border-bottom: 1px solid #333;">
-        <th style="text-align: left; padding: 12px; color: #888; font-size: 13px; font-weight: 500;">Aspect</th>
-        <th style="text-align: left; padding: 12px; color: #888; font-size: 13px; font-weight: 500;">Current Design (Glassy Dark)</th>
-        <th style="text-align: left; padding: 12px; color: #E8832A; font-size: 13px; font-weight: 500;">Appetit Design (Warm Brown)</th>
-      </tr>
-    </thead>
-    <tbody style="font-size: 14px; color: #ccc;">
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Vibe</td>
-        <td style="padding: 12px;">Tech/futuristic, glass morphism</td>
-        <td style="padding: 12px; color: #D4A574;">Warm, cookbook, artisanal</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Background</td>
-        <td style="padding: 12px;">#0A0A0F (cold black)</td>
-        <td style="padding: 12px; color: #D4A574;">#1A1208 (warm brown-black)</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Accent</td>
-        <td style="padding: 12px;">#FF6B35 (coral)</td>
-        <td style="padding: 12px; color: #D4A574;">#E8832A (amber/orange)</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Cards</td>
-        <td style="padding: 12px;">Glass blur + opacity layers</td>
-        <td style="padding: 12px; color: #D4A574;">Full-bleed photo with gradient overlay</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Food Focus</td>
-        <td style="padding: 12px;">Medium — UI-forward</td>
-        <td style="padding: 12px; color: #D4A574;">Maximum — food photography is the hero</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">Light Mode</td>
-        <td style="padding: 12px;">Not built yet</td>
-        <td style="padding: 12px; color: #D4A574;">Full dual-mode (cream/warm white)</td>
-      </tr>
-      <tr style="border-bottom: 1px solid #1A1A1A;">
-        <td style="padding: 12px; color: #888;">"Cookbook" Feel</td>
-        <td style="padding: 12px;">Not really</td>
-        <td style="padding: 12px; color: #D4A574;">Yes — exactly what Nicolas asked for (#17)</td>
-      </tr>
-      <tr>
-        <td style="padding: 12px; color: #888;">Screens Ready</td>
-        <td style="padding: 12px;">~8 screens built</td>
-        <td style="padding: 12px; color: #D4A574;">63 screens x 2 modes = 126 variants</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+function toggleMode() {
+  currentMode = currentMode === 'dark' ? 'light' : 'dark';
+  applyMode();
+}
 
-<div style="height: 80px;"></div>
+function applyMode() {
+  const d = currentMode === 'dark';
+  const modeBtn = document.querySelector('.mode-toggle');
+  modeBtn.textContent = d ? '🌙 Toggle Dark/Light' : '☀️ Toggle Dark/Light';
+  document.getElementById('modeLabel').textContent = d ? 'Dark Mode' : 'Light Mode';
+
+  // Colors
+  const bg = d ? '#1A1208' : '#FFF8F0';
+  const bg2 = d ? '#2A1F12' : '#FFF0E6';
+  const bg3 = d ? '#3A2D1A' : '#FFE8D6';
+  const text = d ? '#FFFFFF' : '#1A1208';
+  const text2 = d ? '#B8A898' : '#6B5D52';
+  const text3 = d ? '#7A6E62' : '#9A8E84';
+  const border = d ? '#3A2D1A' : '#F0E0D0';
+  const accent2 = d ? '#D4A574' : '#C4956A';
+  const tab = d ? '#1E1610' : '#FFF5ED';
+
+  // Phone border
+  document.getElementById('phone1').style.borderColor = d ? '#333' : '#ddd';
+
+  // Onboarding
+  document.getElementById('onboGradient').style.background = `linear-gradient(transparent, rgba(0,0,0,0.3), ${bg})`;
+  document.getElementById('onboLogo').style.color = accent2;
+  document.getElementById('onboTitle').style.color = text;
+  document.getElementById('onboDesc').style.color = text2;
+  document.getElementById('onboSkip').style.color = text3;
+  document.getElementById('onboNext').style.background = '#E8832A';
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.style.background = dot.classList.contains('active') ? '#E8832A' : text3;
+  });
+  document.querySelector('.onboarding').style.background = bg;
+
+  // Home
+  document.getElementById('screen-home').style.background = bg;
+  document.getElementById('homeLogo').style.color = accent2;
+  document.getElementById('homeSearchIcon').style.background = bg3;
+  document.getElementById('homeGreeting').style.color = text;
+
+  // Categories
+  document.querySelectorAll('.cat-pill').forEach((pill, i) => {
+    if (i === 0) {
+      pill.style.background = '#E8832A';
+      pill.style.borderColor = '#E8832A';
+      pill.style.color = '#fff';
+    } else {
+      pill.style.background = bg3;
+      pill.style.borderColor = border;
+      pill.style.color = text2;
+    }
+  });
+
+  // Frigo banner
+  document.getElementById('frigoBanner').style.background = 'linear-gradient(135deg, #E8832A, #C46A1A)';
+
+  // Section titles
+  document.querySelectorAll('.section-title').forEach(t => t.style.color = text);
+  document.querySelectorAll('.view-all').forEach(t => t.style.color = text3);
+
+  // Chef
+  document.querySelectorAll('.chef-ring').forEach(r => r.style.borderColor = '#E8832A');
+  document.querySelectorAll('.chef-name').forEach(n => n.style.color = text);
+  document.querySelectorAll('.chef-count').forEach(c => c.style.color = text3);
+
+  // Quick cards
+  document.querySelectorAll('.quick-card').forEach(c => c.style.background = bg2);
+  document.querySelectorAll('.quick-title').forEach(t => t.style.color = text);
+  document.querySelectorAll('.quick-time').forEach(t => t.style.color = text3);
+
+  // Tab bar
+  document.getElementById('tabBar').style.background = tab;
+  document.getElementById('tabBar').style.borderTopColor = border;
+  document.querySelectorAll('.tab-label').forEach(l => l.style.color = text3);
+  document.getElementById('tabHome').style.color = '#E8832A';
+
+  // Recipe detail
+  document.getElementById('screen-recipe').style.background = bg;
+  document.getElementById('recipeHeroGrad').style.background = `linear-gradient(rgba(0,0,0,0.3), transparent 40%, ${bg})`;
+  document.getElementById('recipeChefName').style.color = text2;
+  document.getElementById('recipeRating').style.color = text2;
+  document.getElementById('recipeTitleText').style.color = text;
+  document.getElementById('recipeSubtitleText').style.color = text2;
+
+  // Stats
+  document.getElementById('statsRow').style.background = bg2;
+  document.getElementById('statsRow').style.borderColor = border;
+  document.querySelectorAll('.stat-value').forEach(v => v.style.color = text);
+  document.querySelectorAll('.stat-label-text').forEach(l => l.style.color = text3);
+  document.querySelectorAll('.stat-divider').forEach(d => d.style.background = border);
+
+  // Tab switch
+  document.getElementById('tabSwitch').style.background = bg2;
+  const ingActive = document.getElementById('ingredientsSection').style.display !== 'none';
+  document.getElementById('tabIng').style.background = ingActive ? '#E8832A' : 'transparent';
+  document.getElementById('tabIng').style.color = ingActive ? '#fff' : text3;
+  document.getElementById('tabDir').style.background = ingActive ? 'transparent' : '#E8832A';
+  document.getElementById('tabDir').style.color = ingActive ? text3 : '#fff';
+
+  // Ingredients
+  document.getElementById('ingCount').style.color = text2;
+  document.querySelectorAll('.ingredient-row').forEach(r => {
+    r.style.background = bg2;
+    r.style.borderColor = border;
+  });
+  document.querySelectorAll('.ing-emoji').forEach(e => e.style.background = bg3);
+  document.querySelectorAll('.ing-name').forEach(n => n.style.color = text);
+  document.querySelectorAll('.ing-qty').forEach(q => q.style.color = text3);
+  document.querySelectorAll('.ing-check').forEach(c => { c.style.borderColor = text3; });
+
+  // Grocery btn
+  document.getElementById('groceryBtn').style.borderColor = '#E8832A';
+  document.getElementById('groceryBtn').style.color = '#E8832A';
+  document.getElementById('groceryBtn').style.background = bg3;
+
+  // Directions
+  document.querySelectorAll('.direction-text').forEach(t => t.style.color = text);
+  document.querySelectorAll('.step-time').forEach(t => t.style.color = text3);
+  document.querySelectorAll('.timer-btn').forEach(b => { b.style.background = bg3; b.style.color = '#E8832A'; });
+
+  // Gallery
+  document.getElementById('galTitle').style.color = text;
+  document.getElementById('galViewAll').style.color = text3;
+
+  // Nutrition
+  document.getElementById('nutCard').style.background = bg2;
+  document.getElementById('nutCard').style.borderColor = border;
+  document.getElementById('nutTitle').style.color = text;
+  document.querySelectorAll('.nut-value').forEach((v, i) => { if (i > 0) v.style.color = text; });
+  document.querySelectorAll('.nut-label').forEach(l => l.style.color = text3);
+
+  // Cooking bar
+  document.getElementById('cookBar').style.background = bg;
+}
+
+// Initial apply
+applyMode();
+
+// Make top control buttons work
+document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const screenName = this.textContent.toLowerCase().replace(' detail', '');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screenName).classList.add('active');
+    document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('phoneScreen').scrollTop = 0;
+  });
+});
+</script>
 
 </body>
 </html>
