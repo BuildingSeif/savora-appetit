@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OptiCook — Appetit Design Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0A0A0A;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #fff;
+    padding: 40px 20px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    text-align: center;
+    color: #D4A574;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 48px;
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 72px;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #E8832A;
+    margin-bottom: 8px;
+    padding-left: 8px;
+    border-left: 3px solid #E8832A;
+  }
+  .section-desc {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 32px;
+    padding-left: 11px;
+  }
+
+  /* Phone row */
+  .phone-row {
+    display: flex;
+    gap: 32px;
+    overflow-x: auto;
+    padding: 20px 0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .phone-row::-webkit-scrollbar { display: none; }
+
+  .phone-frame {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .phone-label {
+    font-size: 12px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .iphone {
+    width: 280px;
+    height: 606px;
+    border-radius: 36px;
+    border: 5px solid #2A2A2A;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.06);
+    background: #000;
+  }
+  .iphone::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #000;
+    border-radius: 0 0 16px 16px;
+    z-index: 10;
+  }
+  .iphone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  /* Mode label */
+  .mode-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .mode-dark { background: #1A1208; color: #D4A574; border: 1px solid #3A2D1A; }
+  .mode-light { background: #FFF8F0; color: #6B5D52; border: 1px solid #F0E0D0; }
+
+  /* Comparison section */
+  .comparison {
+    display: flex;
+    gap: 48px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .comp-group {
+    text-align: center;
+  }
+  .comp-group h3 {
+    font-size: 16px;
+    color: #999;
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .comp-phones {
+    display: flex;
+    gap: 24px;
+  }
+
+  /* Nicolas requirements callout */
+  .requirement-callout {
+    background: linear-gradient(135deg, rgba(232,131,42,0.1), rgba(232,131,42,0.05));
+    border: 1px solid rgba(232,131,42,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    max-width: 900px;
+  }
+  .req-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #E8832A;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .req-text {
+    font-size: 13px;
+    color: #B8A898;
+    line-height: 1.6;
+  }
+
+  /* Flow labels */
+  .flow-name {
+    font-size: 11px;
+    color: #444;
+    margin-top: 8px;
+    text-align: center;
+    max-width: 280px;
+  }
+
+  /* Scrollable hint */
+  .scroll-hint {
+    font-size: 12px;
+    color: #444;
+    text-align: right;
+    margin-bottom: 8px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Appetit UI Kit for OptiCook</h1>
+<p class="subtitle">Dark & Light Mode comparison — Scroll horizontally to see all screens</p>
+
+<!-- ============ ONBOARDING ============ -->
+<div class="section">
+  <div class="section-title">Onboarding & Welcome</div>
+  <div class="section-desc">First impression. Full-bleed food photography with serif headlines.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Welcome / Splash</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Welcome.png" alt="Welcome Dark"></div>
+      <div class="flow-name">Brand splash with orbital animation</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Onboarding Slide</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Onboarding1.png" alt="Onboarding Dark"></div>
+      <div class="flow-name">Product tour — Share Your Recipes</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Onboarding Slide 2</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Onboarding2.png" alt="Onboarding 2 Dark"></div>
+      <div class="flow-name">Product tour — Discover</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Welcome / Splash</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Welcome.png" alt="Welcome Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Onboarding Slide</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Onboarding1.png" alt="Onboarding Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+  <div class="requirement-callout">
+    <div class="req-label">Nicolas Requirements Addressed</div>
+    <div class="req-text">
+      #8 Onboarding (prefs, allergies, equipment, skill) — Adapt these slides to showcase: AI Voice Chef ("OK Chef"), World Cuisines, Cooking Mode, Progression System.<br>
+      #22 App needs NEW NAME — Replace "Appetit" with chosen brand (Savora/Forno).
+    </div>
+  </div>
+</div>
+
+<!-- ============ AUTH & SETUP ============ -->
+<div class="section">
+  <div class="section-title">Authentication & Setup</div>
+  <div class="section-desc">Registration, preferences selection with floating food bubbles.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Register</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Register.png" alt="Register Dark"></div>
+      <div class="flow-name">Email + Google + Apple auth</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Cuisine Preferences</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/SetupPreferences.png" alt="Setup Dark"></div>
+      <div class="flow-name">Floating bubble selection</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Register</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Register.png" alt="Register Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Cuisine Preferences</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/SetupPreferences.png" alt="Setup Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+  <div class="requirement-callout">
+    <div class="req-label">Nicolas Requirements Addressed</div>
+    <div class="req-text">
+      #8 Onboarding preferences, allergies, equipment, skill level.<br>
+      #10 Religious/dietary filtering (Hindu, Halal, Jain) — Add as bubble options alongside cuisine preferences.<br>
+      #9 Indian recipes by region — Add regional sub-selection after "Indian" is chosen.
+    </div>
+  </div>
+</div>
+
+<!-- ============ HOME ============ -->
+<div class="section">
+  <div class="section-title">Home Feed</div>
+  <div class="section-desc">Main screen with category pills, chef carousel, recipe grid, and bottom tab bar with voice FAB.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Home — Style 1</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Home1.png" alt="Home 1 Dark"></div>
+      <div class="flow-name">Primary home layout</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Home — Style 2</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Home2.png" alt="Home 2 Dark"></div>
+      <div class="flow-name">Alternative home layout</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Home — Style 1</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Home1.png" alt="Home 1 Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Home — Style 2</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Home2.png" alt="Home 2 Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+  <div class="requirement-callout">
+    <div class="req-label">Nicolas Requirements Addressed</div>
+    <div class="req-text">
+      #3 Recipe catalog with search and filters — Category pills + recipe grid.<br>
+      #12 Search by product — Add "Frigo Magique" banner above recipe grid.<br>
+      #1 "OK Chef" voice — Center FAB becomes mic/voice button instead of "+".<br>
+      #49 Gamification — Add streak counter widget to home header.
+    </div>
+  </div>
+</div>
+
+<!-- ============ DISCOVER & SEARCH ============ -->
+<div class="section">
+  <div class="section-title">Discover & Search</div>
+  <div class="section-desc">Staggered recipe grid for browsing, and search with filters.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Discover</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Discover.png" alt="Discover Dark"></div>
+      <div class="flow-name">Browse recipes + filter tabs</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Search</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Search.png" alt="Search Dark"></div>
+      <div class="flow-name">Search with keyboard</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Discover</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Discover.png" alt="Discover Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Search</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Search.png" alt="Search Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ RECIPE DETAIL ============ -->
+<div class="section">
+  <div class="section-title">Recipe Detail — THE MONEY SCREEN</div>
+  <div class="section-desc">Nicolas said: "like reading a beautiful cookbook." Hero image, ingredients with emoji, directions, gallery.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Recipe — Full View</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeDetail.png" alt="Recipe Dark"></div>
+      <div class="flow-name">Hero + chef + stats + ingredients + gallery</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Ingredients List</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeIngredients.png" alt="Ingredients Dark"></div>
+      <div class="flow-name">Checklist with emoji + quantities</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Directions</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/RecipeDirections.png" alt="Directions Dark"></div>
+      <div class="flow-name">Step-by-step instructions</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Recipe — Full View</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/RecipeDetail.png" alt="Recipe Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Ingredients List</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/RecipeIngredients.png" alt="Ingredients Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Directions</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/RecipeDirections.png" alt="Directions Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+  <div class="requirement-callout">
+    <div class="req-label">Nicolas Requirements Addressed</div>
+    <div class="req-text">
+      #17 "Reading a beautiful cookbook" — This IS the cookbook feel. Warm photography, serif titles, ingredient images.<br>
+      #11 Ingredients = RAW products only — Clean emoji + name + quantity rows, no sub-ingredients.<br>
+      #2 Step-by-step cooking mode — Directions screen with numbered steps. Add "Start Cooking" button for immersive mode.<br>
+      #7 Timer system — Add timer button per step.
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROFILE & SOCIAL ============ -->
+<div class="section">
+  <div class="section-title">Profile, Notifications & Social</div>
+  <div class="section-desc">User profile with cover photo, recipe collections, notification feed, live cooking.</div>
+  <div class="scroll-hint">scroll →</div>
+  <div class="phone-row">
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Profile</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Profile.png" alt="Profile Dark"></div>
+      <div class="flow-name">Cover + avatar + stats + recipes</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Account / Collections</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Account.png" alt="Account Dark"></div>
+      <div class="flow-name">My cookbooks and saved recipes</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Notifications</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Notification.png" alt="Notification Dark"></div>
+      <div class="flow-name">Activity feed</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-dark">Dark</span>
+      <div class="phone-label">Live Cooking</div>
+      <div class="iphone"><img src="appetit-ui-kit/dark/Live.png" alt="Live Dark"></div>
+      <div class="flow-name">Repurpose for Cooking Mode</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Profile</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Profile.png" alt="Profile Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+    <div class="phone-frame">
+      <span class="mode-badge mode-light">Light</span>
+      <div class="phone-label">Notifications</div>
+      <div class="iphone"><img src="appetit-ui-kit/light/Notification.png" alt="Notification Light"></div>
+      <div class="flow-name">Light mode variant</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SUMMARY ============ -->
+<div class="section" style="max-width: 900px; margin: 0 auto;">
+  <div class="section-title">Design Decision Summary</div>
+  <div class="section-desc">What this UI Kit gives us vs. what the current design has.</div>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+    <thead>
+      <tr style="border-bottom: 1px solid #333;">
+        <th style="text-align: left; padding: 12px; color: #888; font-size: 13px; font-weight: 500;">Aspect</th>
+        <th style="text-align: left; padding: 12px; color: #888; font-size: 13px; font-weight: 500;">Current Design (Glassy Dark)</th>
+        <th style="text-align: left; padding: 12px; color: #E8832A; font-size: 13px; font-weight: 500;">Appetit Design (Warm Brown)</th>
+      </tr>
+    </thead>
+    <tbody style="font-size: 14px; color: #ccc;">
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Vibe</td>
+        <td style="padding: 12px;">Tech/futuristic, glass morphism</td>
+        <td style="padding: 12px; color: #D4A574;">Warm, cookbook, artisanal</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Background</td>
+        <td style="padding: 12px;">#0A0A0F (cold black)</td>
+        <td style="padding: 12px; color: #D4A574;">#1A1208 (warm brown-black)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Accent</td>
+        <td style="padding: 12px;">#FF6B35 (coral)</td>
+        <td style="padding: 12px; color: #D4A574;">#E8832A (amber/orange)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Cards</td>
+        <td style="padding: 12px;">Glass blur + opacity layers</td>
+        <td style="padding: 12px; color: #D4A574;">Full-bleed photo with gradient overlay</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Food Focus</td>
+        <td style="padding: 12px;">Medium — UI-forward</td>
+        <td style="padding: 12px; color: #D4A574;">Maximum — food photography is the hero</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">Light Mode</td>
+        <td style="padding: 12px;">Not built yet</td>
+        <td style="padding: 12px; color: #D4A574;">Full dual-mode (cream/warm white)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid #1A1A1A;">
+        <td style="padding: 12px; color: #888;">"Cookbook" Feel</td>
+        <td style="padding: 12px;">Not really</td>
+        <td style="padding: 12px; color: #D4A574;">Yes — exactly what Nicolas asked for (#17)</td>
+      </tr>
+      <tr>
+        <td style="padding: 12px; color: #888;">Screens Ready</td>
+        <td style="padding: 12px;">~8 screens built</td>
+        <td style="padding: 12px; color: #D4A574;">63 screens x 2 modes = 126 variants</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>
