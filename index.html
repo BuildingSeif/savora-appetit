@@ -1,1320 +1,1577 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OptiCook — Appetit Design Prototype</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<title>Savora - Appetit Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #1A1208;
+  --bg2: #2A1F12;
+  --bg3: #3A2D1A;
+  --accent: #E8832A;
+  --accent2: #D4A574;
+  --text: #FFFFFF;
+  --text2: #B8A898;
+  --text3: #7A6E62;
+  --border: #3A2D1A;
+  --tab-bg: #1E1610;
+}
+.light-mode {
+  --bg: #FFF8F0;
+  --bg2: #FFF0E6;
+  --bg3: #FFE8D6;
+  --accent: #E8832A;
+  --accent2: #C4956A;
+  --text: #1A1208;
+  --text2: #6B5D52;
+  --text3: #9A8E84;
+  --border: #F0E0D0;
+  --tab-bg: #FFF5ED;
+}
+body {
+  background: #0a0a0a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  border-radius: 44px;
+  border: 6px solid #333;
+  background: var(--bg);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  color: var(--text);
+}
+.dynamic-island {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 1000;
+}
+.screen {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+.screen::-webkit-scrollbar { display: none; }
+.screen.active { display: flex; }
+.screen.animating-in {
+  display: flex;
+  animation: slideIn 0.35s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.screen.animating-out {
+  display: flex;
+  animation: slideOut 0.3s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0.5; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-30%); opacity: 0.3; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stagger > * {
+  opacity: 0;
+  animation: fadeIn 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger > *:nth-child(8) { animation-delay: 0.4s; }
+.stagger > *:nth-child(9) { animation-delay: 0.45s; }
+.stagger > *:nth-child(10) { animation-delay: 0.5s; }
 
-  body {
-    background: #0D0D0D;
-    font-family: 'Inter', -apple-system, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 32px 16px;
-    color: #fff;
-  }
+/* Tab Bar */
+.tab-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: var(--tab-bg);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  padding: 0 8px 16px;
+  z-index: 100;
+  border-top: 1px solid var(--border);
+}
+.tab-bar.hidden { display: none; }
+.tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 6px 12px;
+  transition: transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab-item:active { transform: scale(0.93); }
+.tab-item svg { width: 24px; height: 24px; }
+.tab-item .tab-label { font-size: 10px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text3); }
+.tab-item.active svg { color: var(--accent); }
+.tab-item.active .tab-label { color: var(--accent); }
+.tab-item svg { color: var(--text3); stroke: currentColor; fill: none; }
+.tab-fab {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -30px;
+  box-shadow: 0 4px 20px rgba(232,131,42,0.4);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.tab-fab:active { transform: scale(0.93); }
+.tab-fab:hover { box-shadow: 0 6px 28px rgba(232,131,42,0.6); }
+.tab-fab img { width: 30px; height: 30px; border-radius: 4px; }
 
-  /* ===== CONTROLS ===== */
-  .controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .controls button {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 24px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    background: #222;
-    color: #888;
-  }
-  .controls button.active {
-    background: #E8832A;
-    color: #fff;
-    box-shadow: 0 4px 20px rgba(232,131,42,0.4);
-  }
-  .controls button:hover { transform: scale(1.05); }
-  .mode-toggle {
-    background: #333 !important;
-    color: #fff !important;
-  }
-
-  h1.page-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    color: #D4A574;
-    margin-bottom: 6px;
-    letter-spacing: -0.5px;
-  }
-  .page-subtitle {
-    color: #666;
-    font-size: 14px;
-    margin-bottom: 32px;
-  }
-
-  /* ===== PHONE FRAME ===== */
-  .phone-container {
-    display: flex;
-    gap: 40px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .phone-wrapper {
-    text-align: center;
-  }
-  .phone-label {
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 12px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  .phone {
-    width: 375px;
-    height: 812px;
-    border-radius: 44px;
-    overflow: hidden;
-    position: relative;
-    border: 6px solid #333;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
-  }
-  .phone::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 160px;
-    height: 34px;
-    background: #000;
-    border-radius: 0 0 20px 20px;
-    z-index: 1000;
-  }
-  .phone-screen {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: relative;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .phone-screen::-webkit-scrollbar { display: none; }
-
-  /* ===== SHARED TOKENS ===== */
-  :root {
-    /* Dark */
-    --d-bg: #1A1208;
-    --d-bg2: #2A1F12;
-    --d-bg3: #3A2D1A;
-    --d-accent: #E8832A;
-    --d-accent2: #D4A574;
-    --d-text: #FFFFFF;
-    --d-text2: #B8A898;
-    --d-text3: #7A6E62;
-    --d-border: #3A2D1A;
-    --d-tab: #1E1610;
-    /* Light */
-    --l-bg: #FFF8F0;
-    --l-bg2: #FFF0E6;
-    --l-bg3: #FFE8D6;
-    --l-accent: #E8832A;
-    --l-accent2: #C4956A;
-    --l-text: #1A1208;
-    --l-text2: #6B5D52;
-    --l-text3: #9A8E84;
-    --l-border: #F0E0D0;
-    --l-tab: #FFF5ED;
-  }
-
-  .screen { display: none; width: 100%; min-height: 100%; }
-  .screen.active { display: block; }
-
-  /* ===== STATUS BAR ===== */
-  .status-bar {
-    height: 50px;
-    padding: 14px 24px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    font-weight: 600;
-    position: relative;
-    z-index: 10;
-  }
-
-  /* ========================================
-     ONBOARDING SCREEN
-     ======================================== */
-  .onboarding {
-    height: 812px;
-    position: relative;
-    overflow: hidden;
-  }
-  .onboarding-bg {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 65%;
-    object-fit: cover;
-    width: 100%;
-  }
-  .onboarding-gradient {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-  }
-  .onboarding-logo {
-    position: absolute;
-    top: 60px;
-    width: 100%;
-    text-align: center;
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    z-index: 5;
-  }
-  .onboarding-content {
-    position: absolute;
-    bottom: 160px;
-    left: 32px;
-    right: 32px;
-    z-index: 5;
-  }
-  .onboarding-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 42px;
-    line-height: 1.1;
-    margin-bottom: 14px;
-    letter-spacing: -1px;
-  }
-  .onboarding-desc {
-    font-size: 16px;
-    line-height: 1.5;
-    opacity: 0.8;
-  }
-  .onboarding-bottom {
-    position: absolute;
-    bottom: 60px;
-    left: 32px;
-    right: 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 5;
-  }
-  .dots { display: flex; gap: 6px; }
-  .dot {
-    height: 8px;
-    border-radius: 4px;
-    transition: all 0.3s;
-  }
-  .dot.active { width: 24px; }
-  .dot:not(.active) { width: 8px; }
-  .next-btn {
-    width: 56px; height: 56px;
-    border-radius: 28px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    color: #fff;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(232,131,42,0.4);
-  }
-  .skip-btn {
-    position: absolute;
-    top: 60px;
-    right: 24px;
-    font-size: 16px;
-    font-weight: 500;
-    z-index: 10;
-    background: none;
-    border: none;
-    cursor: pointer;
-  }
-
-  /* ========================================
-     HOME SCREEN
-     ======================================== */
-  .home-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 24px;
-  }
-  .home-avatar {
-    width: 40px; height: 40px;
-    border-radius: 20px;
-    object-fit: cover;
-  }
-  .home-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    letter-spacing: -0.5px;
-  }
-  .home-search-icon {
-    width: 40px; height: 40px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-  }
-  .greeting {
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 1.25;
-    padding: 0 24px;
-    margin-bottom: 20px;
-    letter-spacing: -0.3px;
-  }
-
-  /* Category Pills */
-  .category-scroll {
-    display: flex;
-    gap: 8px;
-    padding: 0 24px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .category-scroll::-webkit-scrollbar { display: none; }
-  .cat-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 16px;
-    border-radius: 999px;
-    border: 1px solid;
-    white-space: nowrap;
-    font-size: 14px;
-    font-weight: 500;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  /* Frigo Banner */
-  .frigo-banner {
-    margin: 0 24px 28px;
-    border-radius: 16px;
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .frigo-banner:hover { transform: scale(1.02); }
-  .frigo-emoji { font-size: 32px; }
-  .frigo-text { flex: 1; }
-  .frigo-title { color: #fff; font-size: 18px; font-weight: 700; }
-  .frigo-desc { color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 2px; }
-  .frigo-arrow { color: #fff; font-size: 24px; font-weight: 300; }
-
-  /* Section Header */
-  .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 24px;
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: -0.2px;
-  }
-  .view-all {
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  /* Chef List */
-  .chef-list {
-    display: flex;
-    gap: 20px;
-    padding: 0 24px;
-    margin-bottom: 28px;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .chef-list::-webkit-scrollbar { display: none; }
-  .chef-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 72px;
-    flex-shrink: 0;
-  }
-  .chef-ring {
-    width: 64px; height: 64px;
-    border-radius: 32px;
-    border: 2px solid;
-    padding: 2px;
-    margin-bottom: 6px;
-  }
-  .chef-ring img {
-    width: 100%; height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  .chef-name { font-size: 13px; font-weight: 500; }
-  .chef-count { font-size: 11px; }
-
-  /* Recipe Grid */
-  .recipe-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    padding: 0 24px;
-    margin-bottom: 28px;
-  }
-  .recipe-card {
-    border-radius: 16px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .recipe-card:hover { transform: scale(1.03); }
-  .recipe-card:nth-child(odd) { height: 240px; }
-  .recipe-card:nth-child(even) { height: 180px; }
-  .recipe-card img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .recipe-card .card-overlay {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 60%;
-    background: linear-gradient(transparent, rgba(0,0,0,0.75));
-  }
-  .card-bookmark {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-  }
-  .time-badge {
-    position: absolute;
-    bottom: 50px; left: 10px;
-    padding: 4px 8px;
-    border-radius: 6px;
-    background: rgba(0,0,0,0.5);
-    font-size: 11px;
-    font-weight: 500;
-    color: #fff;
-  }
-  .card-bottom {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 12px;
-  }
-  .card-title {
-    color: #fff;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-  .dietary-tag {
-    display: inline-block;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 500;
-    color: #fff;
-    margin-top: 4px;
-    background: rgba(232,131,42,0.35);
-  }
-
-  /* Quick Recipes */
-  .quick-list {
-    display: flex;
-    gap: 12px;
-    padding: 0 24px;
-    margin-bottom: 28px;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .quick-list::-webkit-scrollbar { display: none; }
-  .quick-card {
-    width: 160px;
-    border-radius: 16px;
-    overflow: hidden;
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .quick-card:hover { transform: scale(1.03); }
-  .quick-card img {
-    width: 100%; height: 110px;
-    object-fit: cover;
-  }
-  .quick-info { padding: 10px; }
-  .quick-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-  .quick-time { font-size: 12px; }
-
-  /* Tab Bar */
-  .tab-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 10px 0 28px;
-    border-top: 0.5px solid;
-    z-index: 50;
-  }
-  .tab-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 56px;
-    font-size: 22px;
-    cursor: pointer;
-  }
-  .tab-label {
-    font-size: 10px;
-    font-weight: 500;
-    margin-top: 2px;
-  }
-  .tab-fab {
-    width: 56px; height: 56px;
-    border-radius: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    margin-top: -30px;
-    box-shadow: 0 4px 16px rgba(232,131,42,0.4);
-    cursor: pointer;
-  }
-
-  /* ========================================
-     RECIPE DETAIL SCREEN
-     ======================================== */
-  .recipe-hero {
-    width: 100%;
-    height: 320px;
-    position: relative;
-  }
-  .recipe-hero img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-  }
-  .recipe-hero-gradient {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-  }
-  .recipe-top-bar {
-    position: absolute;
-    top: 50px; left: 16px; right: 16px;
-    display: flex;
-    justify-content: space-between;
-    z-index: 10;
-  }
-  .recipe-top-btn {
-    width: 36px; height: 36px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.4);
-    color: #fff;
-    font-size: 18px;
-    cursor: pointer;
-    border: none;
-  }
-  .recipe-top-right { display: flex; gap: 8px; }
-
-  /* Chef Row */
-  .chef-row {
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    margin-top: -16px;
-    margin-bottom: 12px;
-    position: relative;
-    z-index: 5;
-  }
-  .chef-row img {
-    width: 36px; height: 36px;
-    border-radius: 18px;
-    margin-right: 10px;
-    object-fit: cover;
-  }
-  .chef-info { flex: 1; }
-  .chef-info-name { font-size: 13px; font-weight: 500; }
-  .rating-row { display: flex; align-items: center; gap: 4px; }
-  .rating-star { color: #FFB800; font-size: 14px; }
-  .rating-text { font-size: 12px; }
-  .follow-btn {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-
-  .recipe-title-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px;
-    letter-spacing: -0.5px;
-    padding: 0 24px;
-    margin-bottom: 4px;
-  }
-  .recipe-subtitle-text {
-    font-size: 14px;
-    padding: 0 24px;
-    margin-bottom: 20px;
-    line-height: 1.4;
-  }
-
-  /* Stats Row */
-  .stats-row {
-    display: flex;
-    margin: 0 24px 20px;
-    border-radius: 16px;
-    padding: 16px;
-    border: 0.5px solid;
-  }
-  .stat-item {
-    flex: 1;
-    text-align: center;
-  }
-  .stat-emoji { font-size: 18px; margin-bottom: 4px; }
-  .stat-value { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-  .stat-label-text { font-size: 11px; }
-  .stat-divider {
-    width: 0.5px;
-    align-self: stretch;
-  }
-
-  /* Tab Switch */
-  .tab-switch {
-    display: flex;
-    margin: 0 24px 20px;
-    border-radius: 12px;
-    padding: 4px;
-  }
-  .tab-btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  /* Ingredients */
-  .ingredient-row {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-radius: 12px;
-    margin: 0 24px 8px;
-    border: 1px solid;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .ingredient-row:hover { transform: scale(1.01); }
-  .ing-emoji {
-    width: 40px; height: 40px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    margin-right: 12px;
-    flex-shrink: 0;
-  }
-  .ing-name { flex: 1; font-size: 15px; font-weight: 500; }
-  .ing-qty { font-size: 13px; margin-right: 12px; }
-  .ing-check {
-    width: 22px; height: 22px;
-    border-radius: 6px;
-    border: 1.5px solid;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    flex-shrink: 0;
-  }
-
-  /* Directions */
-  .direction-item {
-    display: flex;
-    padding: 0 24px;
-    margin-bottom: 20px;
-  }
-  .step-num {
-    width: 32px; height: 32px;
-    border-radius: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 700;
-    margin-right: 12px;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .direction-text {
-    font-size: 15px;
-    line-height: 1.5;
-    margin-bottom: 8px;
-  }
-  .step-meta {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .step-time { font-size: 12px; }
-  .timer-btn {
-    padding: 4px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-  }
-
-  /* Gallery */
-  .gallery-list {
-    display: flex;
-    gap: 10px;
-    padding: 0 24px;
-    margin-bottom: 24px;
-    overflow-x: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .gallery-list::-webkit-scrollbar { display: none; }
-  .gallery-list img {
-    width: 100px; height: 100px;
-    border-radius: 12px;
-    object-fit: cover;
-    flex-shrink: 0;
-  }
-
-  /* Nutrition */
-  .nutrition-card {
-    margin: 0 24px 24px;
-    border-radius: 16px;
-    padding: 18px;
-    border: 0.5px solid;
-  }
-  .nutrition-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; }
-  .nutrition-row {
-    display: flex;
-    justify-content: space-around;
-  }
-  .nut-item { text-align: center; }
-  .nut-value { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
-  .nut-label { font-size: 12px; }
-
-  /* Grocery Button */
-  .grocery-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 14px;
-    margin: 8px 24px 24px;
-    border-radius: 12px;
-    border: 1px solid;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    background: transparent;
-    width: calc(100% - 48px);
-  }
-
-  /* Start Cooking */
-  .start-cooking-bar {
-    position: sticky;
-    bottom: 0;
-    padding: 16px 24px 36px;
-    z-index: 50;
-  }
-  .start-cooking-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px;
-    border-radius: 24px;
-    border: none;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-    font-family: 'Inter', sans-serif;
-    cursor: pointer;
-    width: 100%;
-    box-shadow: 0 4px 20px rgba(232,131,42,0.4);
-    transition: transform 0.2s;
-  }
-  .start-cooking-btn:hover { transform: scale(1.02); }
-
-  /* Ingredient Count */
-  .ing-count {
-    padding: 0 24px;
-    margin-bottom: 12px;
-    font-size: 13px;
-  }
+/* Common */
+.btn-accent {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 16px 32px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(232,131,42,0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-accent:active { transform: scale(0.97); }
+.btn-accent:hover { box-shadow: 0 6px 28px rgba(232,131,42,0.5); }
+.back-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: var(--bg2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  transition: transform 0.15s;
+}
+.back-btn:active { transform: scale(0.93); }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  margin-bottom: 12px;
+}
+.section-header h3 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+.section-header a { color: var(--accent); font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.pill.active, .pill.selected {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.pill:active { transform: scale(0.95); }
+.recipe-card {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.recipe-card:active { transform: scale(0.97); }
+.recipe-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.recipe-card .overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+}
+.recipe-card .overlay .title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; color: #fff; }
+.recipe-card .overlay .time { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+.recipe-card .bookmark {
+  position: absolute; top: 8px; right: 8px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+}
+.recipe-card .bookmark svg { width: 16px; height: 16px; color: #fff; stroke: currentColor; fill: none; }
+.time-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 500;
+}
+.horiz-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.horiz-scroll::-webkit-scrollbar { display: none; }
+.input-field {
+  width: 100%;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 14px 20px;
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  outline: none;
+}
+.input-field::placeholder { color: var(--text3); }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 500;
+}
+.chip .close { cursor: pointer; opacity: 0.7; }
+.card-bg2 {
+  background: var(--bg2);
+  border-radius: 16px;
+  padding: 16px;
+}
+.toggle-row {
+  display: flex; gap: 0; border-radius: 12px; background: var(--bg2); overflow: hidden; margin: 0 20px;
+}
+.toggle-btn {
+  flex: 1; padding: 12px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; color: var(--text3); transition: all 0.2s;
+}
+.toggle-btn.active { background: var(--accent); color: #fff; border-radius: 12px; }
+.mode-toggle {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--bg3); border: none; color: var(--text2);
+  cursor: pointer; font-size: 16px; z-index: 1001;
+  display: flex; align-items: center; justify-content: center;
+}
 </style>
 </head>
 <body>
+<div class="phone-frame" id="phone">
+  <div class="dynamic-island"></div>
+  <button class="mode-toggle" onclick="toggleMode()" title="Toggle light/dark mode">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+  </button>
 
-<h1 class="page-title">OptiCook Design Prototype</h1>
-<p class="page-subtitle">Appetit UI Kit adaptation — Dark & Light Mode — Tap screens to navigate</p>
-
-<!-- Controls -->
-<div class="controls">
-  <button class="active" onclick="showScreen('onboarding')">Onboarding</button>
-  <button onclick="showScreen('home')">Home</button>
-  <button onclick="showScreen('recipe')">Recipe Detail</button>
-  <button class="mode-toggle" onclick="toggleMode()">🌙 Toggle Dark/Light</button>
-</div>
-
-<div class="phone-container" id="phoneContainer">
-  <!-- PHONE 1 -->
-  <div class="phone-wrapper">
-    <div class="phone-label" id="modeLabel">Dark Mode</div>
-    <div class="phone" id="phone1">
-      <div class="phone-screen" id="phoneScreen">
-
-        <!-- ==================== ONBOARDING ==================== -->
-        <div class="screen active" id="screen-onboarding">
-          <div class="onboarding" id="onboardingSlide">
-            <img class="onboarding-bg" src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=1000&fit=crop" alt="">
-            <div class="onboarding-gradient" id="onboGradient"></div>
-            <div class="onboarding-logo" id="onboLogo">Savora</div>
-            <button class="skip-btn" id="onboSkip">Skip</button>
-            <div class="onboarding-content">
-              <div class="onboarding-title" id="onboTitle">Your AI<br>Kitchen Chef</div>
-              <div class="onboarding-desc" id="onboDesc">Say "OK Chef" and cook hands-free with voice-guided step-by-step instructions.</div>
-            </div>
-            <div class="onboarding-bottom">
-              <div class="dots">
-                <div class="dot active" id="dot1"></div>
-                <div class="dot" id="dot2"></div>
-                <div class="dot" id="dot3"></div>
-              </div>
-              <button class="next-btn" id="onboNext" onclick="nextSlide()">→</button>
-            </div>
-          </div>
+  <!-- SCREEN 1: WELCOME -->
+  <div class="screen active" id="welcome" data-no-tab="true">
+    <div style="position:relative;width:100%;height:100%;overflow:hidden;">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" style="width:100%;height:65%;object-fit:cover;position:absolute;top:0;left:0;">
+      <div style="position:absolute;top:0;left:0;right:0;height:65%;background:linear-gradient(transparent 40%, var(--bg) 100%);"></div>
+      <div style="position:absolute;top:60px;left:0;right:0;text-align:center;">
+        <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--accent2);font-weight:700;">Savora</span>
+      </div>
+      <div style="position:absolute;top:16px;right:20px;color:var(--text2);font-size:14px;cursor:pointer;z-index:10;" onclick="goTo('home');switchTab(0);">Passer</div>
+      <div style="position:absolute;bottom:160px;left:24px;right:24px;">
+        <h1 style="font-family:'Playfair Display',serif;font-size:42px;font-weight:700;line-height:1.1;color:var(--text);">Decouvrez la cuisine<br>autrement.</h1>
+        <p style="font-size:16px;color:var(--text);opacity:0.8;margin-top:12px;line-height:1.5;">Des milliers de recettes adaptees a vos envies.</p>
+      </div>
+      <div style="position:absolute;bottom:60px;left:24px;right:24px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="display:flex;gap:6px;align-items:center;">
+          <div style="width:24px;height:6px;border-radius:3px;background:var(--accent);"></div>
+          <div style="width:8px;height:6px;border-radius:3px;background:var(--text3);"></div>
+          <div style="width:8px;height:6px;border-radius:3px;background:var(--text3);"></div>
         </div>
-
-        <!-- ==================== HOME ==================== -->
-        <div class="screen" id="screen-home">
-          <div class="home-header">
-            <img class="home-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop" alt="">
-            <div class="home-logo" id="homeLogo">Savora</div>
-            <div class="home-search-icon" id="homeSearchIcon">🔍</div>
-          </div>
-          <div class="greeting" id="homeGreeting">What do you want<br>to cook today?</div>
-
-          <div class="category-scroll" id="catScroll">
-            <div class="cat-pill cat-active" id="cat-1">🍽️ All</div>
-            <div class="cat-pill" id="cat-2">🥐 French</div>
-            <div class="cat-pill" id="cat-3">🍛 Indian</div>
-            <div class="cat-pill" id="cat-4">🍝 Italian</div>
-            <div class="cat-pill" id="cat-5">🍣 Japanese</div>
-            <div class="cat-pill" id="cat-6">🌮 Mexican</div>
-          </div>
-
-          <div class="frigo-banner" id="frigoBanner">
-            <div class="frigo-emoji">🧊</div>
-            <div class="frigo-text">
-              <div class="frigo-title">Frigo Magique</div>
-              <div class="frigo-desc">Tell us what's in your fridge, we'll find the recipe</div>
-            </div>
-            <div class="frigo-arrow">→</div>
-          </div>
-
-          <div class="section-header">
-            <div class="section-title" id="chefSectionTitle">Top Chefs</div>
-            <div class="view-all" id="chefViewAll">view all</div>
-          </div>
-          <div class="chef-list">
-            <div class="chef-item">
-              <div class="chef-ring" id="chefRing1"><img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=100&h=100&fit=crop" alt=""></div>
-              <div class="chef-name" id="chefName1">Antoine</div>
-              <div class="chef-count" id="chefCount1">156 recipes</div>
-            </div>
-            <div class="chef-item">
-              <div class="chef-ring" id="chefRing2"><img src="https://images.unsplash.com/photo-1595257841889-eca2678571e7?w=100&h=100&fit=crop" alt=""></div>
-              <div class="chef-name" id="chefName2">Priya</div>
-              <div class="chef-count" id="chefCount2">203 recipes</div>
-            </div>
-            <div class="chef-item">
-              <div class="chef-ring" id="chefRing3"><img src="https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=100&h=100&fit=crop" alt=""></div>
-              <div class="chef-name" id="chefName3">Yuki</div>
-              <div class="chef-count" id="chefCount3">134 recipes</div>
-            </div>
-            <div class="chef-item">
-              <div class="chef-ring" id="chefRing4"><img src="https://images.unsplash.com/photo-1583394293214-28ece3fd7fc?w=100&h=100&fit=crop" alt=""></div>
-              <div class="chef-name" id="chefName4">Marco</div>
-              <div class="chef-count" id="chefCount4">89 recipes</div>
-            </div>
-          </div>
-
-          <div class="section-header">
-            <div class="section-title" id="popularTitle">Popular Recipes</div>
-            <div class="view-all" id="popularViewAll">view all</div>
-          </div>
-          <div class="recipe-grid">
-            <div class="recipe-card" onclick="showScreen('recipe')">
-              <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400&h=500&fit=crop" alt="">
-              <div class="card-overlay"></div>
-              <div class="card-bookmark" id="bm1" style="background: #E8832A;">🔖</div>
-              <div class="time-badge">⏱ 45 min</div>
-              <div class="card-bottom">
-                <div class="card-title">Coq au Vin Classique</div>
-                <div class="dietary-tag">Halal</div>
-              </div>
-            </div>
-            <div class="recipe-card" onclick="showScreen('recipe')">
-              <img src="https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&h=300&fit=crop" alt="">
-              <div class="card-overlay"></div>
-              <div class="card-bookmark" style="background: rgba(255,255,255,0.2);">🏷️</div>
-              <div class="time-badge">⏱ 35 min</div>
-              <div class="card-bottom">
-                <div class="card-title">Butter Chicken Masala</div>
-                <div class="dietary-tag">Halal</div>
-              </div>
-            </div>
-            <div class="recipe-card" onclick="showScreen('recipe')">
-              <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=400&h=500&fit=crop" alt="">
-              <div class="card-overlay"></div>
-              <div class="card-bookmark" style="background: rgba(255,255,255,0.2);">🏷️</div>
-              <div class="time-badge">⏱ 30 min</div>
-              <div class="card-bottom">
-                <div class="card-title">Risotto aux Champignons</div>
-                <div class="dietary-tag">Vegetarian</div>
-              </div>
-            </div>
-            <div class="recipe-card" onclick="showScreen('recipe')">
-              <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&h=300&fit=crop" alt="">
-              <div class="card-overlay"></div>
-              <div class="card-bookmark" id="bm4" style="background: #E8832A;">🔖</div>
-              <div class="time-badge">⏱ 55 min</div>
-              <div class="card-bottom">
-                <div class="card-title">Tarte Tatin aux Pommes</div>
-                <div class="dietary-tag">Vegetarian</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-header">
-            <div class="section-title" id="quickTitle">Quick & Easy</div>
-            <div class="view-all" id="quickViewAll">view all</div>
-          </div>
-          <div class="quick-list">
-            <div class="quick-card" id="quickCard1">
-              <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop" alt="">
-              <div class="quick-info">
-                <div class="quick-title" id="qt1">Salade Nicoise</div>
-                <div class="quick-time" id="qtm1">⏱ 15 min</div>
-              </div>
-            </div>
-            <div class="quick-card" id="quickCard2">
-              <img src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&h=300&fit=crop" alt="">
-              <div class="quick-info">
-                <div class="quick-title" id="qt2">Croque Monsieur</div>
-                <div class="quick-time" id="qtm2">⏱ 10 min</div>
-              </div>
-            </div>
-            <div class="quick-card" id="quickCard3">
-              <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop" alt="">
-              <div class="quick-info">
-                <div class="quick-title" id="qt3">Soupe a l'Oignon</div>
-                <div class="quick-time" id="qtm3">⏱ 20 min</div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height: 100px;"></div>
-
-          <!-- Tab Bar -->
-          <div class="tab-bar" id="tabBar">
-            <div class="tab-item">
-              <span>🏠</span>
-              <span class="tab-label" id="tabHome" style="color: #E8832A;">Home</span>
-            </div>
-            <div class="tab-item">
-              <span>🔍</span>
-              <span class="tab-label" id="tabDiscover">Discover</span>
-            </div>
-            <div class="tab-fab" id="tabFab" style="background: #E8832A;">🎙️</div>
-            <div class="tab-item">
-              <span>📅</span>
-              <span class="tab-label" id="tabMenu">Menu</span>
-            </div>
-            <div class="tab-item">
-              <span>👤</span>
-              <span class="tab-label" id="tabProfile">Profile</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==================== RECIPE DETAIL ==================== -->
-        <div class="screen" id="screen-recipe">
-          <div class="recipe-hero">
-            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&h=600&fit=crop" alt="">
-            <div class="recipe-hero-gradient" id="recipeHeroGrad"></div>
-            <div class="recipe-top-bar">
-              <button class="recipe-top-btn" onclick="showScreen('home')">←</button>
-              <div class="recipe-top-right">
-                <button class="recipe-top-btn">♡</button>
-                <button class="recipe-top-btn" style="background: #E8832A;">🔖</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="chef-row">
-            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=100&h=100&fit=crop" alt="">
-            <div class="chef-info">
-              <div class="chef-info-name" id="recipeChefName">Chef Antoine Dubois</div>
-              <div class="rating-row">
-                <span class="rating-star">★</span>
-                <span class="rating-text" id="recipeRating">4.8 (234 reviews)</span>
-              </div>
-            </div>
-            <button class="follow-btn" id="followBtn" style="background: #E8832A;">Follow</button>
-          </div>
-
-          <div class="recipe-title-text" id="recipeTitleText">Coq au Vin Classique</div>
-          <div class="recipe-subtitle-text" id="recipeSubtitleText">A timeless French braised chicken in red wine</div>
-
-          <div class="stats-row" id="statsRow">
-            <div class="stat-item">
-              <div class="stat-emoji">⏱</div>
-              <div class="stat-value" id="sv1">45 min</div>
-              <div class="stat-label-text" id="sl1">Cook</div>
-            </div>
-            <div class="stat-divider" id="sd1"></div>
-            <div class="stat-item">
-              <div class="stat-emoji">🍽️</div>
-              <div class="stat-value" id="sv2">4</div>
-              <div class="stat-label-text" id="sl2">Servings</div>
-            </div>
-            <div class="stat-divider" id="sd2"></div>
-            <div class="stat-item">
-              <div class="stat-emoji">🔥</div>
-              <div class="stat-value" id="sv3">520</div>
-              <div class="stat-label-text" id="sl3">Calories</div>
-            </div>
-            <div class="stat-divider" id="sd3"></div>
-            <div class="stat-item">
-              <div class="stat-emoji">📊</div>
-              <div class="stat-value" id="sv4">Medium</div>
-              <div class="stat-label-text" id="sl4">Level</div>
-            </div>
-          </div>
-
-          <div class="tab-switch" id="tabSwitch">
-            <button class="tab-btn tab-btn-active" id="tabIng" onclick="switchTab('ingredients')">Ingredients</button>
-            <button class="tab-btn" id="tabDir" onclick="switchTab('directions')">Directions</button>
-          </div>
-
-          <div id="ingredientsSection">
-            <div class="ing-count" id="ingCount">12 items</div>
-            <div class="ingredient-row" id="ir1"><div class="ing-emoji" id="ie1">🍗</div><div class="ing-name" id="in1">Chicken</div><div class="ing-qty" id="iq1">1.5 kg</div><div class="ing-check" id="ic1"></div></div>
-            <div class="ingredient-row" id="ir2"><div class="ing-emoji" id="ie2">🍷</div><div class="ing-name" id="in2">Red wine</div><div class="ing-qty" id="iq2">750 ml</div><div class="ing-check" id="ic2"></div></div>
-            <div class="ingredient-row" id="ir3"><div class="ing-emoji" id="ie3">🥕</div><div class="ing-name" id="in3">Carrots</div><div class="ing-qty" id="iq3">3 pcs</div><div class="ing-check" id="ic3"></div></div>
-            <div class="ingredient-row" id="ir4"><div class="ing-emoji" id="ie4">🧅</div><div class="ing-name" id="in4">Onion</div><div class="ing-qty" id="iq4">2 pcs</div><div class="ing-check" id="ic4"></div></div>
-            <div class="ingredient-row" id="ir5"><div class="ing-emoji" id="ie5">🧄</div><div class="ing-name" id="in5">Garlic</div><div class="ing-qty" id="iq5">4 cloves</div><div class="ing-check" id="ic5"></div></div>
-            <div class="ingredient-row" id="ir6"><div class="ing-emoji" id="ie6">🍄</div><div class="ing-name" id="in6">Mushrooms</div><div class="ing-qty" id="iq6">200 g</div><div class="ing-check" id="ic6"></div></div>
-            <div class="ingredient-row" id="ir7"><div class="ing-emoji" id="ie7">🌿</div><div class="ing-name" id="in7">Thyme</div><div class="ing-qty" id="iq7">3 sprigs</div><div class="ing-check" id="ic7"></div></div>
-            <div class="ingredient-row" id="ir8"><div class="ing-emoji" id="ie8">🍃</div><div class="ing-name" id="in8">Bay leaves</div><div class="ing-qty" id="iq8">2 pcs</div><div class="ing-check" id="ic8"></div></div>
-            <div class="ingredient-row" id="ir9"><div class="ing-emoji" id="ie9">🧈</div><div class="ing-name" id="in9">Butter</div><div class="ing-qty" id="iq9">30 g</div><div class="ing-check" id="ic9"></div></div>
-            <div class="ingredient-row" id="ir10"><div class="ing-emoji" id="ie10">🌾</div><div class="ing-name" id="in10">Flour</div><div class="ing-qty" id="iq10">2 tbsp</div><div class="ing-check" id="ic10"></div></div>
-            <button class="grocery-btn" id="groceryBtn">🛒 Add all to grocery list</button>
-          </div>
-
-          <div id="directionsSection" style="display:none;">
-            <div class="direction-item">
-              <div class="step-num" style="background:#E8832A;">1</div>
-              <div>
-                <div class="direction-text" id="dt1">Season the chicken pieces with salt and pepper. Dust lightly with flour.</div>
-                <div class="step-meta"><span class="step-time" id="stm1">⏱ 5 min</span><button class="timer-btn" id="tb1">Set Timer</button></div>
-              </div>
-            </div>
-            <div class="direction-item">
-              <div class="step-num" style="background:#E8832A;">2</div>
-              <div>
-                <div class="direction-text" id="dt2">In a large Dutch oven, cook the bacon until crispy. Remove and set aside.</div>
-                <div class="step-meta"><span class="step-time" id="stm2">⏱ 5 min</span><button class="timer-btn" id="tb2">Set Timer</button></div>
-              </div>
-            </div>
-            <div class="direction-item">
-              <div class="step-num" style="background:#E8832A;">3</div>
-              <div>
-                <div class="direction-text" id="dt3">Brown the chicken pieces in the bacon fat on all sides until golden.</div>
-                <div class="step-meta"><span class="step-time" id="stm3">⏱ 10 min</span><button class="timer-btn" id="tb3">Set Timer</button></div>
-              </div>
-            </div>
-            <div class="direction-item">
-              <div class="step-num" style="background:#E8832A;">4</div>
-              <div>
-                <div class="direction-text" id="dt4">Pour in the red wine, scraping up the browned bits. Add thyme and bay leaves. Return chicken and simmer 35 min.</div>
-                <div class="step-meta"><span class="step-time" id="stm4">⏱ 35 min</span><button class="timer-btn" id="tb4">Set Timer</button></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section-header" style="margin-top: 8px;">
-            <div class="section-title" id="galTitle">Gallery</div>
-            <div class="view-all" id="galViewAll">View All</div>
-          </div>
-          <div class="gallery-list">
-            <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?w=200&h=200&fit=crop" alt="">
-            <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=200&h=200&fit=crop" alt="">
-            <img src="https://images.unsplash.com/photo-1476124369491-e7addf5db371?w=200&h=200&fit=crop" alt="">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&h=200&fit=crop" alt="">
-          </div>
-
-          <div class="nutrition-card" id="nutCard">
-            <div class="nutrition-title" id="nutTitle">Nutrition per serving</div>
-            <div class="nutrition-row">
-              <div class="nut-item"><div class="nut-value" id="nv1" style="color:#E8832A;">520</div><div class="nut-label" id="nl1">kcal</div></div>
-              <div class="nut-item"><div class="nut-value" id="nv2">42g</div><div class="nut-label" id="nl2">Protein</div></div>
-              <div class="nut-item"><div class="nut-value" id="nv3">18g</div><div class="nut-label" id="nl3">Carbs</div></div>
-              <div class="nut-item"><div class="nut-value" id="nv4">24g</div><div class="nut-label" id="nl4">Fat</div></div>
-            </div>
-          </div>
-
-          <div class="start-cooking-bar" id="cookBar">
-            <button class="start-cooking-btn" id="cookBtn" style="background:#E8832A;">🎙️ Start Cooking</button>
-          </div>
-        </div>
-
+        <button onclick="goTo('dietary')" style="width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(232,131,42,0.4);display:flex;align-items:center;justify-content:center;transition:transform 0.15s;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- SCREEN 2: DIETARY -->
+  <div class="screen" id="dietary" data-no-tab="true">
+    <div style="padding:60px 24px 40px;" class="stagger">
+      <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-top:24px;line-height:1.15;">Preferences<br>alimentaires</h1>
+      <p style="font-size:14px;color:var(--text2);margin-top:8px;">Selectionnez vos regimes ou restrictions.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;" id="dietary-pills">
+        <div class="pill" onclick="this.classList.toggle('selected')">Vegetarien</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Vegan</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Pescetarien</div>
+        <div class="pill selected" onclick="this.classList.toggle('selected')">Halal</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Hindu</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Jain</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Casher</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Sans gluten</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Keto</div>
+        <div class="pill" onclick="this.classList.toggle('selected')">Paleo</div>
+      </div>
+      <button class="btn-accent" style="margin-top:40px;" onclick="goTo('skill')">Continuer</button>
+      <div style="text-align:center;margin-top:16px;color:var(--text3);font-size:14px;cursor:pointer;" onclick="goTo('skill')">Passer</div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: SKILL -->
+  <div class="screen" id="skill" data-no-tab="true">
+    <div style="padding:60px 24px 40px;" class="stagger">
+      <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-top:24px;line-height:1.15;">Votre niveau<br>en cuisine</h1>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:28px;">
+        <div class="card-bg2 skill-card" onclick="selectSkill(this)" style="cursor:pointer;transition:all 0.2s;">
+          <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text3);">01</span>
+          <div style="font-weight:600;font-size:16px;margin-top:4px;">Debutant</div>
+          <div style="font-size:13px;font-weight:300;color:var(--text2);margin-top:2px;">Je decouvre la cuisine</div>
+        </div>
+        <div class="card-bg2 skill-card" onclick="selectSkill(this)" style="cursor:pointer;border:1px solid var(--accent);background:rgba(232,131,42,0.1);transition:all 0.2s;">
+          <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text3);">02</span>
+          <div style="font-weight:600;font-size:16px;margin-top:4px;">Intermediaire</div>
+          <div style="font-size:13px;font-weight:300;color:var(--text2);margin-top:2px;">Je maitrise les bases</div>
+        </div>
+        <div class="card-bg2 skill-card" onclick="selectSkill(this)" style="cursor:pointer;transition:all 0.2s;">
+          <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text3);">03</span>
+          <div style="font-weight:600;font-size:16px;margin-top:4px;">Avance</div>
+          <div style="font-size:13px;font-weight:300;color:var(--text2);margin-top:2px;">Je connais les techniques</div>
+        </div>
+        <div class="card-bg2 skill-card" onclick="selectSkill(this)" style="cursor:pointer;transition:all 0.2s;">
+          <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--text3);">04</span>
+          <div style="font-weight:600;font-size:16px;margin-top:4px;">Expert</div>
+          <div style="font-size:13px;font-weight:300;color:var(--text2);margin-top:2px;">La cuisine est ma passion</div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:32px;" onclick="goTo('equipment')">Continuer</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: EQUIPMENT -->
+  <div class="screen" id="equipment" data-no-tab="true">
+    <div style="padding:60px 24px 40px;" class="stagger">
+      <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:700;margin-top:24px;line-height:1.15;">Votre equipement<br>cuisine</h1>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px;">
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 6V4M17 6V4"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Four</div>
+        </div>
+        <div class="card-bg2 equip-card selected" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;border:1px solid var(--accent);background:rgba(232,131,42,0.1);transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="14" r="7"/><path d="M9 7h6M12 3v4"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text);">Mixeur</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M3 12h18M5 12c0-4 3-8 7-8s7 4 7 8"/><path d="M5 12v4c0 2 2 4 7 4s7-2 7-4v-4"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Cocotte</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6M18 8V6M2 12h20"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Grill</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Vapeur</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M4 18h16M6 18V8l6-4 6 4v10"/><path d="M10 18v-4h4v4"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Robot</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="12" cy="12" r="4"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Micro-ondes</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M12 2L2 7h20L12 2zM4 7v10h16V7"/><path d="M8 11h8"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Wok</div>
+        </div>
+        <div class="card-bg2 equip-card" onclick="this.classList.toggle('selected')" style="text-align:center;padding:20px 8px;cursor:pointer;transition:all 0.2s;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M3 14h18M5 14c0-5 3-10 7-10s7 5 7 10"/><path d="M8 14v4M16 14v4M6 18h12"/></svg>
+          <div style="font-size:12px;margin-top:8px;color:var(--text2);">Friteuse</div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:32px;" onclick="goTo('home');switchTab(0);">C'est parti</button>
+    </div>
+  </div>
+  <!-- SCREEN 5: HOME -->
+  <div class="screen" id="home">
+    <div style="padding:52px 0 100px;">
+      <!-- Header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px 0;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <span style="font-family:'Playfair Display',serif;font-size:28px;color:var(--accent2);font-weight:700;">Savora</span>
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;cursor:pointer;" onclick="goTo('search');switchTab(1);">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+      </div>
+
+      <!-- Greeting -->
+      <div style="padding:20px 20px 0;">
+        <h2 style="font-weight:700;font-size:28px;line-height:1.2;">Bonjour,<br>Chef Nicolas</h2>
+      </div>
+
+      <!-- Category Pills -->
+      <div class="horiz-scroll" style="margin-top:20px;gap:8px;">
+        <div class="pill active">Tout</div>
+        <div class="pill" onclick="this.parentElement.querySelector('.active')?.classList.remove('active');this.classList.add('active');">Francaise</div>
+        <div class="pill" onclick="this.parentElement.querySelector('.active')?.classList.remove('active');this.classList.add('active');">Italienne</div>
+        <div class="pill" onclick="this.parentElement.querySelector('.active')?.classList.remove('active');this.classList.add('active');">Indienne</div>
+        <div class="pill" onclick="this.parentElement.querySelector('.active')?.classList.remove('active');this.classList.add('active');">Japonaise</div>
+        <div class="pill" onclick="this.parentElement.querySelector('.active')?.classList.remove('active');this.classList.add('active');">Rapide</div>
+      </div>
+
+      <!-- Frigo Magique Banner -->
+      <div style="margin:20px 20px 0;padding:20px;background:var(--accent);border-radius:16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;" onclick="goTo('frigo')">
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;">Frigo Magique</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-top:4px;">Cuisinez avec ce que vous avez</div>
+        </div>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+
+      <!-- Tendances -->
+      <div class="section-header" style="margin-top:28px;">
+        <h3>Tendances</h3>
+        <a onclick="goTo('search');switchTab(1);">Voir tout</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px;">
+        <div class="recipe-card" style="height:240px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80" alt="Poulet Basquaise">
+          <div class="time-badge">45 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Poulet Basquaise</div><div class="time">Cuisine francaise</div></div>
+        </div>
+        <div class="recipe-card" style="height:180px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80" alt="Penne Arrabiata">
+          <div class="time-badge">25 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Penne Arrabiata</div><div class="time">Cuisine italienne</div></div>
+        </div>
+        <div class="recipe-card" style="height:180px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&q=80" alt="Curry Vert Thai">
+          <div class="time-badge">35 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Curry Vert Thai</div><div class="time">Cuisine asiatique</div></div>
+        </div>
+        <div class="recipe-card" style="height:240px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400&q=80" alt="Boeuf Bourguignon">
+          <div class="time-badge">120 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Boeuf Bourguignon</div><div class="time">Cuisine francaise</div></div>
+        </div>
+      </div>
+
+      <!-- En 15 minutes -->
+      <div class="section-header" style="margin-top:28px;">
+        <h3>En 15 minutes</h3>
+        <a onclick="goTo('search');switchTab(1);">Voir tout</a>
+      </div>
+      <div class="horiz-scroll">
+        <div class="recipe-card" style="width:160px;height:200px;flex-shrink:0;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" alt="Salade">
+          <div class="time-badge">10 min</div>
+          <div class="overlay"><div class="title">Salade Cesar</div><div class="time">Rapide</div></div>
+        </div>
+        <div class="recipe-card" style="width:160px;height:200px;flex-shrink:0;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&q=80" alt="Sushi">
+          <div class="time-badge">15 min</div>
+          <div class="overlay"><div class="title">Maki Saumon</div><div class="time">Japonaise</div></div>
+        </div>
+        <div class="recipe-card" style="width:160px;height:200px;flex-shrink:0;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80" alt="Soupe">
+          <div class="time-badge">15 min</div>
+          <div class="overlay"><div class="title">Soupe Miso</div><div class="time">Japonaise</div></div>
+        </div>
+      </div>
+
+      <!-- Cuisines du monde -->
+      <div class="section-header" style="margin-top:28px;">
+        <h3>Cuisines du monde</h3>
+        <a onclick="goTo('search');switchTab(1);">Voir tout</a>
+      </div>
+      <div class="horiz-scroll" style="gap:8px;">
+        <div class="pill">Francaise</div>
+        <div class="pill">Italienne</div>
+        <div class="pill">Japonaise</div>
+        <div class="pill">Marocaine</div>
+        <div class="pill">Indienne</div>
+        <div class="pill">Mexicaine</div>
+      </div>
+
+      <!-- More recipes -->
+      <div class="section-header" style="margin-top:28px;">
+        <h3>Pour vous</h3>
+        <a onclick="goTo('search');switchTab(1);">Voir tout</a>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 20px;">
+        <div class="recipe-card" style="height:240px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" alt="Salmon">
+          <div class="time-badge">30 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Saumon Grille</div><div class="time">Healthy</div></div>
+        </div>
+        <div class="recipe-card" style="height:180px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&q=80" alt="Ramen">
+          <div class="time-badge">40 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Ramen Tonkotsu</div><div class="time">Japonaise</div></div>
+        </div>
+        <div class="recipe-card" style="height:180px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=400&q=80" alt="Tagine">
+          <div class="time-badge">60 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Tagine Agneau</div><div class="time">Marocaine</div></div>
+        </div>
+        <div class="recipe-card" style="height:240px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80" alt="Dessert">
+          <div class="time-badge">50 min</div>
+          <div class="bookmark"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+          <div class="overlay"><div class="title">Creme Brulee</div><div class="time">Patisserie</div></div>
+        </div>
+      </div>
+
+      <!-- Import Banner -->
+      <div style="margin:28px 20px 0;padding:20px;background:var(--bg2);border-radius:16px;cursor:pointer;display:flex;align-items:center;gap:16px;" onclick="goTo('import')">
+        <div style="width:48px;height:48px;border-radius:12px;background:var(--bg3);display:flex;align-items:center;justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M10 13a5 5 0 007.5.5l.5-.5a5 5 0 00-7.5-6.5"/><path d="M14 11a5 5 0 00-7.5-.5l-.5.5a5 5 0 007.5 6.5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:15px;">Importer une recette</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:2px;">Depuis un lien ou les reseaux</div>
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
+  </div>
+  <!-- SCREEN 6: SEARCH -->
+  <div class="screen" id="search">
+    <div style="padding:52px 20px 100px;" class="stagger">
+      <input class="input-field" placeholder="Rechercher une recette..." style="margin-top:8px;">
+      <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;">
+        <div class="pill active">Tout</div>
+        <div class="pill">Rapide</div>
+        <div class="pill">Vegetarien</div>
+        <div class="pill">Facile</div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:20px;">
+        <div class="card-bg2" style="flex:1;padding:16px;cursor:pointer;text-align:center;" onclick="goTo('frigo')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M4 10h16M12 10v2"/></svg>
+          <div style="font-size:13px;font-weight:600;margin-top:8px;">Frigo Magique</div>
+        </div>
+        <div class="card-bg2" style="flex:1;padding:16px;cursor:pointer;text-align:center;" onclick="goTo('import')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><path d="M10 13a5 5 0 007.5.5l.5-.5a5 5 0 00-7.5-6.5"/><path d="M14 11a5 5 0 00-7.5-.5l-.5.5a5 5 0 007.5 6.5"/></svg>
+          <div style="font-size:13px;font-weight:600;margin-top:8px;">Importer</div>
+        </div>
+      </div>
+      <div class="section-header" style="padding:0;margin-top:24px;">
+        <h3>Populaires</h3>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;">
+        <div class="recipe-card" style="height:200px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80" alt="Pain">
+          <div class="time-badge">90 min</div>
+          <div class="overlay"><div class="title">Pain Maison</div><div class="time">Boulangerie</div></div>
+        </div>
+        <div class="recipe-card" style="height:160px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&q=80" alt="Curry">
+          <div class="time-badge">35 min</div>
+          <div class="overlay"><div class="title">Curry Madras</div><div class="time">Indienne</div></div>
+        </div>
+        <div class="recipe-card" style="height:160px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&q=80" alt="Sushi">
+          <div class="time-badge">30 min</div>
+          <div class="overlay"><div class="title">Sushi Rolls</div><div class="time">Japonaise</div></div>
+        </div>
+        <div class="recipe-card" style="height:200px;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80" alt="Salmon">
+          <div class="time-badge">25 min</div>
+          <div class="overlay"><div class="title">Pave de Saumon</div><div class="time">Healthy</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 7: FRIGO MAGIQUE -->
+  <div class="screen" id="frigo">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Frigo Magique</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text2);margin-top:12px;">Entrez les ingredients que vous avez, on fait le reste.</p>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <input class="input-field" placeholder="Ajouter un ingredient..." style="flex:1;">
+        <button style="width:48px;height:48px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </button>
+        <button style="width:48px;height:48px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+        </button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+        <div class="chip">Poulet <span class="close" onclick="this.parentElement.remove()">x</span></div>
+        <div class="chip">Tomates <span class="close" onclick="this.parentElement.remove()">x</span></div>
+        <div class="chip">Oignons <span class="close" onclick="this.parentElement.remove()">x</span></div>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:10px;">Suggestions</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <div class="pill">Ail</div>
+          <div class="pill">Poivrons</div>
+          <div class="pill">Riz</div>
+          <div class="pill">Pates</div>
+          <div class="pill">Creme</div>
+          <div class="pill">Curry</div>
+          <div class="pill">Citron</div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:32px;">Trouver des recettes</button>
+
+      <!-- Results preview -->
+      <div style="margin-top:28px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">3 recettes trouvees</div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+            <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80" style="width:80px;height:80px;border-radius:12px;object-fit:cover;">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-weight:600;font-size:15px;">Poulet Basquaise</div>
+              <div style="font-size:13px;color:var(--text2);margin-top:2px;">45 min . 4 portions</div>
+              <div style="font-size:12px;color:var(--accent);margin-top:4px;">3/3 ingredients</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: IMPORT -->
+  <div class="screen" id="import">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Importer</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text2);margin-top:12px;">Collez un lien ou scannez une recette.</p>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <input class="input-field" placeholder="Coller un lien..." style="flex:1;">
+        <button style="width:48px;height:48px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Plateformes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="card-bg2" style="text-align:center;padding:20px;cursor:pointer;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="18" cy="6" r="1.5"/></svg>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;">Instagram</div>
+          </div>
+          <div class="card-bg2" style="text-align:center;padding:20px;cursor:pointer;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><path d="M9 12a4 4 0 108 0 4 4 0 00-8 0z"/><path d="M16 8v8M8 8v8M12 3v18"/></svg>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;">TikTok</div>
+          </div>
+          <div class="card-bg2" style="text-align:center;padding:20px;cursor:pointer;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><path d="M22.54 6.42a2.78 2.78 0 00-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 00-1.94 2A29 29 0 001 11.75a29 29 0 00.46 5.33A2.78 2.78 0 003.4 19.1c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 001.94-2 29 29 0 00.46-5.25 29 29 0 00-.46-5.43z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="var(--accent)" stroke="none"/></svg>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;">YouTube</div>
+          </div>
+          <div class="card-bg2" style="text-align:center;padding:20px;cursor:pointer;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <div style="font-size:13px;font-weight:600;margin-top:8px;">Web</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-bg2" style="margin-top:16px;display:flex;align-items:center;gap:16px;cursor:pointer;">
+        <div style="width:48px;height:48px;border-radius:12px;background:var(--bg3);display:flex;align-items:center;justify-content:center;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <div>
+          <div style="font-weight:600;font-size:15px;">Scanner une recette</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:2px;">Photo d'un livre ou magazine</div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:24px;">Extraire la recette</button>
+    </div>
+  </div>
+  <!-- SCREEN 9: RECIPE DETAIL -->
+  <div class="screen" id="recipe-detail">
+    <div style="padding-bottom:100px;">
+      <!-- Hero -->
+      <div style="position:relative;height:320px;">
+        <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=800&q=80" style="width:100%;height:100%;object-fit:cover;">
+        <div style="position:absolute;inset:0;background:linear-gradient(transparent 50%, var(--bg) 100%);"></div>
+        <div style="position:absolute;top:52px;left:16px;right:16px;display:flex;justify-content:space-between;">
+          <button class="back-btn" onclick="goBack()" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+          <div style="display:flex;gap:8px;">
+            <button class="back-btn" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+            <button class="back-btn" style="background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chef row -->
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:14px;">Chef Marie</div>
+          <div style="display:flex;gap:2px;margin-top:2px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--text3)" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+        </div>
+        <button style="padding:8px 16px;border-radius:50px;background:var(--accent);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;">Suivre</button>
+      </div>
+
+      <!-- Title -->
+      <div style="padding:0 20px;">
+        <h1 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Poulet Basquaise</h1>
+        <p style="font-size:14px;color:var(--text2);margin-top:8px;line-height:1.5;">Un classique du Pays Basque avec des poivrons colores, tomates fraiches et herbes aromatiques.</p>
+      </div>
+
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px;margin-top:20px;">
+        <div class="card-bg2" style="text-align:center;padding:12px 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <div style="font-weight:700;font-size:15px;margin-top:6px;">45 min</div>
+          <div style="font-size:11px;color:var(--text3);">Temps</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:12px 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+          <div style="font-weight:700;font-size:15px;margin-top:6px;">4</div>
+          <div style="font-size:11px;color:var(--text3);">Portions</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:12px 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><path d="M12 20V10M18 20V4M6 20v-4"/></svg>
+          <div style="font-weight:700;font-size:15px;margin-top:6px;">520</div>
+          <div style="font-size:11px;color:var(--text3);">Calories</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:12px 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" style="margin:0 auto;display:block;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <div style="font-weight:700;font-size:15px;margin-top:6px;">Moyen</div>
+          <div style="font-size:11px;color:var(--text3);">Difficulte</div>
+        </div>
+      </div>
+
+      <!-- Tabs: Ingredients / Directions -->
+      <div class="toggle-row" style="margin-top:24px;" id="recipe-tabs">
+        <div class="toggle-btn active" onclick="showRecipeTab('ingredients')">Ingredients</div>
+        <div class="toggle-btn" onclick="showRecipeTab('directions')">Preparation</div>
+      </div>
+
+      <!-- Ingredients -->
+      <div id="recipe-ingredients" style="padding:16px 20px;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 2c-4 0-8 6-8 10a8 8 0 0016 0c0-4-4-10-8-10z"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Poulet fermier</div></div>
+            <div style="font-size:14px;color:var(--text2);">1.5 kg</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Poivrons</div></div>
+            <div style="font-size:14px;color:var(--text2);">3</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Tomates</div></div>
+            <div style="font-size:14px;color:var(--text2);">400g</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Oignons</div></div>
+            <div style="font-size:14px;color:var(--text2);">2</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Piment d'Espelette</div></div>
+            <div style="font-size:14px;color:var(--text2);">1 c.c.</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:var(--bg2);display:flex;align-items:center;justify-content:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/></svg>
+            </div>
+            <div style="flex:1;"><div style="font-size:14px;font-weight:500;">Huile d'olive</div></div>
+            <div style="font-size:14px;color:var(--text2);">3 c.s.</div>
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+          </div>
+        </div>
+      </div>
+
+      <!-- Directions (hidden by default) -->
+      <div id="recipe-directions" style="padding:16px 20px;display:none;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="display:flex;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">1</div>
+            <p style="font-size:14px;line-height:1.6;color:var(--text2);">Decoupez le poulet en morceaux. Salez et poivrez generalement.</p>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">2</div>
+            <p style="font-size:14px;line-height:1.6;color:var(--text2);">Faites dorer les morceaux dans l'huile d'olive pendant 5 minutes de chaque cote.</p>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">3</div>
+            <p style="font-size:14px;line-height:1.6;color:var(--text2);">Ajoutez les oignons eminces et les poivrons coupes en laniere. Cuisez 8 minutes.</p>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;">4</div>
+            <p style="font-size:14px;line-height:1.6;color:var(--text2);">Versez les tomates concassees, ajoutez le piment d'Espelette. Laissez mijoter 30 minutes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="padding:0 20px;">
+        <button class="btn-accent" onclick="goTo('cooking')">Cuisiner</button>
+      </div>
+
+      <!-- Nutrition -->
+      <div class="card-bg2" style="margin:20px;padding:20px;">
+        <div style="font-weight:600;font-size:15px;margin-bottom:12px;">Nutrition (par portion)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div><span style="font-size:13px;color:var(--text3);">Proteines</span><br><span style="font-weight:600;">42g</span></div>
+          <div><span style="font-size:13px;color:var(--text3);">Glucides</span><br><span style="font-weight:600;">18g</span></div>
+          <div><span style="font-size:13px;color:var(--text3);">Lipides</span><br><span style="font-weight:600;">28g</span></div>
+          <div><span style="font-size:13px;color:var(--text3);">Fibres</span><br><span style="font-weight:600;">4g</span></div>
+        </div>
+      </div>
+
+      <div style="padding:0 20px;">
+        <button style="width:100%;padding:16px;border-radius:50px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Ajouter aux courses</button>
+      </div>
+    </div>
+  </div>
+  <!-- SCREEN 10: COOKING -->
+  <div class="screen" id="cooking">
+    <div style="padding:52px 20px 40px;display:flex;flex-direction:column;height:100%;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div></div>
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      </div>
+      <!-- Progress bars -->
+      <div style="display:flex;gap:3px;margin-top:20px;">
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--accent);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--accent);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--accent);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--bg3);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--bg3);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--bg3);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--bg3);"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:var(--bg3);"></div>
+      </div>
+      <!-- Step image -->
+      <div style="margin-top:24px;border-radius:16px;overflow:hidden;height:200px;">
+        <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=600&q=80" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <!-- Step badge -->
+      <div style="margin-top:20px;">
+        <span style="padding:6px 14px;border-radius:20px;background:var(--bg2);font-size:12px;font-weight:600;color:var(--accent);">Etape 3 sur 8</span>
+      </div>
+      <!-- Instruction -->
+      <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-top:16px;line-height:1.35;">Ajoutez les oignons eminces et les poivrons. Cuisez 8 minutes a feu moyen.</h2>
+      <!-- Timer -->
+      <div style="margin-top:24px;text-align:center;">
+        <div style="font-size:48px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;">08:00</div>
+        <div style="font-size:13px;color:var(--text3);margin-top:4px;">Appuyez pour demarrer</div>
+      </div>
+      <!-- Navigation -->
+      <div style="flex:1;"></div>
+      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;padding-bottom:20px;">
+        <button style="padding:14px 24px;border-radius:50px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Precedent</button>
+        <button style="width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(232,131,42,0.4);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
+        </button>
+        <button style="padding:14px 24px;border-radius:50px;background:var(--accent);border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;" onclick="goTo('cook-complete')">Suivant</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 11: COOK COMPLETE -->
+  <div class="screen" id="cook-complete">
+    <div style="padding:80px 24px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;" class="stagger">
+      <div style="width:80px;height:80px;border-radius:50%;background:rgba(232,131,42,0.15);display:flex;align-items:center;justify-content:center;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-top:24px;">Bravo, Chef!</h1>
+      <p style="font-size:15px;color:var(--text2);margin-top:8px;">Votre Poulet Basquaise est pret.</p>
+      <div style="display:flex;gap:16px;margin-top:32px;">
+        <div class="card-bg2" style="text-align:center;padding:16px 20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">45</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Minutes</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:16px 20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">+50</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">XP gagnes</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:16px 20px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">3</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Serie jours</div>
+        </div>
+      </div>
+      <!-- AI Debrief -->
+      <div class="card-bg2" style="margin-top:24px;width:100%;text-align:left;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 2a10 10 0 100 20 10 10 0 000-20z"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span style="font-weight:600;font-size:14px;">Conseil du Chef IA</span>
+        </div>
+        <p style="font-size:13px;color:var(--text2);line-height:1.5;">Pour un Poulet Basquaise encore plus savoureux, laissez mariner le poulet avec le piment d'Espelette la veille.</p>
+      </div>
+      <!-- Next recipe -->
+      <div class="card-bg2" style="margin-top:16px;width:100%;display:flex;gap:12px;cursor:pointer;text-align:left;" onclick="goTo('recipe-detail')">
+        <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+        <div>
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:500;">Recette suivante</div>
+          <div style="font-weight:600;font-size:15px;margin-top:2px;">Penne Arrabiata</div>
+          <div style="font-size:13px;color:var(--text2);">25 min</div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:32px;" onclick="goTo('home');switchTab(0);">Retour</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 12: PLANNER -->
+  <div class="screen" id="planner">
+    <div style="padding:52px 20px 100px;" class="stagger">
+      <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-top:8px;">Mon Menu</h2>
+      <!-- Day tabs -->
+      <div class="horiz-scroll" style="margin-top:16px;gap:6px;padding:0;">
+        <div class="pill active">Lun</div>
+        <div class="pill">Mar</div>
+        <div class="pill">Mer</div>
+        <div class="pill">Jeu</div>
+        <div class="pill">Ven</div>
+        <div class="pill">Sam</div>
+        <div class="pill">Dim</div>
+      </div>
+      <!-- Meals -->
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:16px;">
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:8px;">Petit-dejeuner</div>
+          <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+            <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+            <div style="display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-weight:600;font-size:14px;">Pain Maison</div>
+              <div style="font-size:12px;color:var(--text2);">90 min . 280 kcal</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:8px;">Dejeuner</div>
+          <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+            <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+            <div style="display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-weight:600;font-size:14px;">Poulet Basquaise</div>
+              <div style="font-size:12px;color:var(--text2);">45 min . 520 kcal</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:8px;">Diner</div>
+          <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+            <div style="display:flex;flex-direction:column;justify-content:center;">
+              <div style="font-weight:600;font-size:14px;">Salade Cesar</div>
+              <div style="font-size:12px;color:var(--text2);">10 min . 350 kcal</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:8px;">Collation</div>
+          <div class="card-bg2" style="display:flex;align-items:center;justify-content:center;padding:24px;cursor:pointer;border:1px dashed var(--border);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            <span style="margin-left:8px;color:var(--text3);font-size:14px;">Ajouter une recette</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-accent" style="margin-top:24px;" onclick="goTo('grocery')">Liste de courses</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 13: GROCERY -->
+  <div class="screen" id="grocery">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Courses</h2>
+      </div>
+      <div style="margin-top:24px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Viandes</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Poulet fermier (1.5 kg)</span>
+            <span style="font-size:13px;color:var(--text3);">12.50</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Legumes</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Poivrons (3)</span>
+            <span style="font-size:13px;color:var(--text3);">3.20</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Tomates concassees (400g)</span>
+            <span style="font-size:13px;color:var(--text3);">1.80</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Oignons (2)</span>
+            <span style="font-size:13px;color:var(--text3);">0.90</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Salade romaine</span>
+            <span style="font-size:13px;color:var(--text3);">2.10</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Epicerie</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Piment d'Espelette</span>
+            <span style="font-size:13px;color:var(--text3);">4.50</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <input type="checkbox" style="accent-color:var(--accent);width:20px;height:20px;">
+            <span style="flex:1;font-size:14px;">Huile d'olive</span>
+            <span style="font-size:13px;color:var(--text3);">6.90</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-bg2" style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:600;font-size:16px;">Total estime</span>
+        <span style="font-weight:700;font-size:20px;color:var(--accent);">31.90</span>
+      </div>
+    </div>
+  </div>
+  <!-- SCREEN 14: PROFILE -->
+  <div class="screen" id="profile">
+    <div style="padding:52px 20px 100px;" class="stagger">
+      <!-- Avatar + Name -->
+      <div style="text-align:center;margin-top:16px;">
+        <div style="width:80px;height:80px;border-radius:50%;background:var(--bg3);margin:0 auto;display:flex;align-items:center;justify-content:center;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-top:12px;">Chef Nicolas</h2>
+        <div style="font-size:13px;color:var(--accent);font-weight:600;margin-top:4px;">Niveau 12 — Cuisinier Avance</div>
+      </div>
+      <!-- XP Bar -->
+      <div style="margin-top:20px;">
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text3);margin-bottom:6px;">
+          <span>2,450 XP</span>
+          <span>3,000 XP</span>
+        </div>
+        <div style="height:6px;border-radius:3px;background:var(--bg3);overflow:hidden;">
+          <div style="width:82%;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));"></div>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px;">
+        <div class="card-bg2" style="text-align:center;padding:16px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">47</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Recettes</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:16px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">12</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Cuisines</div>
+        </div>
+        <div class="card-bg2" style="text-align:center;padding:16px;">
+          <div style="font-size:24px;font-weight:700;color:var(--accent);">3</div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px;">Serie jours</div>
+        </div>
+      </div>
+      <!-- Badges -->
+      <div style="margin-top:24px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Badges</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(232,131,42,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5"/></svg>
+            </div>
+            <div style="font-size:10px;color:var(--text2);margin-top:4px;">Chef Debutant</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(232,131,42,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div style="font-size:10px;color:var(--text2);margin-top:4px;">10 Recettes</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:rgba(232,131,42,0.15);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </div>
+            <div style="font-size:10px;color:var(--text2);margin-top:4px;">Speed Chef</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="width:52px;height:52px;border-radius:14px;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            </div>
+            <div style="font-size:10px;color:var(--text3);margin-top:4px;">Verrouille</div>
+          </div>
+        </div>
+      </div>
+      <!-- Learning paths -->
+      <div style="margin-top:24px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text3);font-weight:500;margin-bottom:12px;">Parcours d'apprentissage</div>
+        <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('learning-path')">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(232,131,42,0.15);display:flex;align-items:center;justify-content:center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:14px;">Bases Francaises</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:2px;">3/5 recettes terminees</div>
+            <div style="height:4px;border-radius:2px;background:var(--bg3);margin-top:6px;overflow:hidden;">
+              <div style="width:60%;height:100%;border-radius:2px;background:var(--accent);"></div>
+            </div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+      <!-- Settings + Premium -->
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <button style="flex:1;padding:14px;border-radius:16px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;" onclick="goTo('settings')">Reglages</button>
+        <button style="flex:1;padding:14px;border-radius:16px;background:var(--accent);border:none;color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;" onclick="goTo('subscription')">Premium</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 15: LEARNING PATH -->
+  <div class="screen" id="learning-path">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Bases Francaises</h2>
+      </div>
+      <p style="font-size:14px;color:var(--text2);margin-top:12px;">Maitrisez les classiques de la cuisine francaise.</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px;">
+        <!-- Completed -->
+        <div class="card-bg2" style="display:flex;gap:12px;opacity:1;cursor:pointer;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-weight:600;font-size:14px;">Poulet Basquaise</div>
+            <div style="font-size:12px;color:var(--accent);margin-top:2px;">Termine</div>
+          </div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+        </div>
+        <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1534939561126-855b8675edd7?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-weight:600;font-size:14px;">Boeuf Bourguignon</div>
+            <div style="font-size:12px;color:var(--accent);margin-top:2px;">Termine</div>
+          </div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+        </div>
+        <div class="card-bg2" style="display:flex;gap:12px;cursor:pointer;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-weight:600;font-size:14px;">Creme Brulee</div>
+            <div style="font-size:12px;color:var(--accent);margin-top:2px;">Termine</div>
+          </div>
+          <div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+        </div>
+        <!-- Active -->
+        <div class="card-bg2" style="display:flex;gap:12px;border:1px solid var(--accent);cursor:pointer;" onclick="goTo('recipe-detail')">
+          <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&q=80" style="width:60px;height:60px;border-radius:10px;object-fit:cover;">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-weight:600;font-size:14px;">Soupe a l'Oignon</div>
+            <div style="font-size:12px;color:var(--accent);margin-top:2px;">En cours</div>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <!-- Locked -->
+        <div class="card-bg2" style="display:flex;gap:12px;opacity:0.5;">
+          <div style="width:60px;height:60px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div style="font-weight:600;font-size:14px;">Ratatouille</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px;">Verrouille</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- SCREEN 16: SETTINGS -->
+  <div class="screen" id="settings">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Reglages</h2>
+      </div>
+      <div style="margin-top:24px;display:flex;flex-direction:column;gap:4px;">
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+            <span style="font-size:14px;font-weight:500;">Mon profil</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="goTo('dietary')">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/></svg>
+            <span style="font-size:14px;font-weight:500;">Preferences alimentaires</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+            <span style="font-size:14px;font-weight:500;">Notifications</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            <span style="font-size:14px;font-weight:500;">Unites et mesures</span>
+          </div>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="toggleMode()">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+            <span style="font-size:14px;font-weight:500;">Mode sombre</span>
+          </div>
+          <div style="width:44px;height:24px;border-radius:12px;background:var(--accent);position:relative;cursor:pointer;">
+            <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px;transition:all 0.2s;"></div>
+          </div>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/></svg>
+            <span style="font-size:14px;font-weight:500;">Langue</span>
+          </div>
+          <span style="font-size:13px;color:var(--text3);">Francais</span>
+        </div>
+        <div style="height:8px;"></div>
+        <div class="card-bg2" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span style="font-size:14px;font-weight:500;">A propos</span>
+          </div>
+          <span style="font-size:13px;color:var(--text3);">v1.0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 17: SUBSCRIPTION -->
+  <div class="screen" id="subscription">
+    <div style="padding:52px 20px 40px;" class="stagger">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="back-btn" onclick="goBack()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+        <h2 style="font-family:'Playfair Display',serif;font-size:28px;font-weight:700;">Abonnement</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:24px;">
+        <!-- Gratuit -->
+        <div class="card-bg2" style="padding:20px;">
+          <div style="font-weight:600;font-size:16px;">Gratuit</div>
+          <div style="font-size:28px;font-weight:700;margin-top:8px;">0<span style="font-size:14px;color:var(--text3);font-weight:400;">/mois</span></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              10 recettes par jour
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Frigo Magique basique
+            </div>
+          </div>
+          <div style="margin-top:12px;padding:10px;border-radius:50px;border:1px solid var(--border);text-align:center;font-size:14px;color:var(--text3);font-weight:500;">Actuel</div>
+        </div>
+        <!-- Premium -->
+        <div style="padding:20px;border-radius:16px;background:linear-gradient(135deg,var(--accent) 0%,#D4A574 100%);position:relative;overflow:hidden;">
+          <div style="position:absolute;top:12px;right:12px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,0.2);font-size:11px;color:#fff;font-weight:600;">Populaire</div>
+          <div style="font-weight:600;font-size:16px;color:#fff;">Premium</div>
+          <div style="font-size:28px;font-weight:700;margin-top:8px;color:#fff;">4.99<span style="font-size:14px;font-weight:400;opacity:0.8;">/mois</span></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.9);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Recettes illimitees
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.9);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Frigo Magique avance
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.9);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Menu planner
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.9);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Coach IA personnel
+            </div>
+          </div>
+          <button style="margin-top:16px;width:100%;padding:14px;border-radius:50px;background:#fff;border:none;color:var(--accent);font-size:15px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;">Essai gratuit 7 jours</button>
+        </div>
+        <!-- Absolu -->
+        <div class="card-bg2" style="padding:20px;">
+          <div style="font-weight:600;font-size:16px;">Absolu</div>
+          <div style="font-size:28px;font-weight:700;margin-top:8px;">9.99<span style="font-size:14px;color:var(--text3);font-weight:400;">/mois</span></div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Tout Premium inclus
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Cours de cuisine video
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Livraison ingredients
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
+              Acces anticipie nouveautes
+            </div>
+          </div>
+          <button style="margin-top:16px;width:100%;padding:14px;border-radius:50px;background:var(--bg3);border:none;color:var(--text);font-size:15px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">Choisir Absolu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar hidden" id="tab-bar">
+    <div class="tab-item active" onclick="switchTab(0)">
+      <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="tab-label">Home</span>
+    </div>
+    <div class="tab-item" onclick="switchTab(1)">
+      <svg viewBox="0 0 24 24" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+      <span class="tab-label">Discover</span>
+    </div>
+    <div class="tab-fab" onclick="goTo('frigo')">
+      <img src="data:image/png;base64,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" alt="M" style="border-radius:4px;">
+    </div>
+    <div class="tab-item" onclick="switchTab(3)">
+      <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      <span class="tab-label">Saved</span>
+    </div>
+    <div class="tab-item" onclick="switchTab(4)">
+      <svg viewBox="0 0 24 24" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/></svg>
+      <span class="tab-label">Profile</span>
+    </div>
+  </div>
+
+</div><!-- end phone-frame -->
 
 <script>
-let currentMode = 'dark';
-let currentSlide = 0;
+const TAB_SCREENS = ['home', 'search', 'frigo', 'planner', 'profile'];
+let history = ['welcome'];
+let currentScreen = 'welcome';
 
-function showScreen(name) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  // Reset scroll
-  document.getElementById('phoneScreen').scrollTop = 0;
-}
-
-const slides = [
-  { title: 'Your AI<br>Kitchen Chef', desc: 'Say "OK Chef" and cook hands-free with voice-guided step-by-step instructions.', img: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&h=1000&fit=crop' },
-  { title: 'Discover<br>World Cuisines', desc: 'From French classics to Indian spices. Personalized recipes from 120+ countries.', img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=1000&fit=crop' },
-  { title: 'Cook Like<br>a Pro', desc: 'Level up your skills with Duolingo-style learning paths and earn badges.', img: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&h=1000&fit=crop' },
-];
-
-function nextSlide() {
-  currentSlide = (currentSlide + 1) % slides.length;
-  const s = slides[currentSlide];
-  document.querySelector('.onboarding-bg').src = s.img;
-  document.getElementById('onboTitle').innerHTML = s.title;
-  document.getElementById('onboDesc').textContent = s.desc;
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.classList.toggle('active', i === currentSlide);
-  });
-}
-
-function switchTab(tab) {
-  if (tab === 'ingredients') {
-    document.getElementById('ingredientsSection').style.display = 'block';
-    document.getElementById('directionsSection').style.display = 'none';
-  } else {
-    document.getElementById('ingredientsSection').style.display = 'none';
-    document.getElementById('directionsSection').style.display = 'block';
+function goTo(id) {
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(id);
+  if (!prev || !next || currentScreen === id) return;
+  
+  prev.classList.remove('active');
+  prev.classList.add('animating-out');
+  next.classList.add('animating-in');
+  
+  setTimeout(() => {
+    prev.classList.remove('animating-out');
+    prev.style.display = 'none';
+    next.classList.remove('animating-in');
+    next.classList.add('active');
+  }, 350);
+  
+  history.push(id);
+  currentScreen = id;
+  updateTabBar();
+  
+  // Re-trigger stagger animations
+  const stagger = next.querySelector('.stagger');
+  if (stagger) {
+    stagger.style.animation = 'none';
+    stagger.offsetHeight; // reflow
+    stagger.style.animation = '';
+    Array.from(stagger.children).forEach(c => {
+      c.style.animation = 'none';
+      c.offsetHeight;
+      c.style.animation = '';
+    });
   }
-  applyMode();
+}
+
+function goBack() {
+  if (history.length <= 1) return;
+  history.pop();
+  const prevId = history[history.length - 1];
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(prevId);
+  if (!prev || !next) return;
+  
+  prev.classList.remove('active');
+  prev.style.display = 'none';
+  next.classList.add('active');
+  next.style.display = 'flex';
+  
+  currentScreen = prevId;
+  updateTabBar();
+}
+
+function switchTab(index) {
+  const id = TAB_SCREENS[index];
+  // Clear history to tab root
+  history = [id];
+  
+  const prev = document.getElementById(currentScreen);
+  const next = document.getElementById(id);
+  if (!prev || !next) return;
+  
+  // Hide all screens first
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'animating-in', 'animating-out');
+    s.style.display = 'none';
+  });
+  
+  next.classList.add('active');
+  next.style.display = 'flex';
+  currentScreen = id;
+  
+  // Update tab items
+  document.querySelectorAll('.tab-item').forEach((t, i) => {
+    t.classList.toggle('active', i === index || (index >= 2 && i === index));
+  });
+  // Remap: items are 0,1,(fab),3,4 → indices 0,1,skip,3,4
+  const tabItems = document.querySelectorAll('.tab-item');
+  tabItems.forEach(t => t.classList.remove('active'));
+  if (index === 0) tabItems[0].classList.add('active');
+  if (index === 1) tabItems[1].classList.add('active');
+  if (index === 3) tabItems[2].classList.add('active');
+  if (index === 4) tabItems[3].classList.add('active');
+  
+  updateTabBar();
+}
+
+function updateTabBar() {
+  const el = document.getElementById(currentScreen);
+  const noTab = el && el.dataset.noTab === 'true';
+  const tabBar = document.getElementById('tab-bar');
+  if (noTab) {
+    tabBar.classList.add('hidden');
+  } else {
+    tabBar.classList.remove('hidden');
+  }
 }
 
 function toggleMode() {
-  currentMode = currentMode === 'dark' ? 'light' : 'dark';
-  applyMode();
+  document.getElementById('phone').classList.toggle('light-mode');
 }
 
-function applyMode() {
-  const d = currentMode === 'dark';
-  const modeBtn = document.querySelector('.mode-toggle');
-  modeBtn.textContent = d ? '🌙 Toggle Dark/Light' : '☀️ Toggle Dark/Light';
-  document.getElementById('modeLabel').textContent = d ? 'Dark Mode' : 'Light Mode';
-
-  // Colors
-  const bg = d ? '#1A1208' : '#FFF8F0';
-  const bg2 = d ? '#2A1F12' : '#FFF0E6';
-  const bg3 = d ? '#3A2D1A' : '#FFE8D6';
-  const text = d ? '#FFFFFF' : '#1A1208';
-  const text2 = d ? '#B8A898' : '#6B5D52';
-  const text3 = d ? '#7A6E62' : '#9A8E84';
-  const border = d ? '#3A2D1A' : '#F0E0D0';
-  const accent2 = d ? '#D4A574' : '#C4956A';
-  const tab = d ? '#1E1610' : '#FFF5ED';
-
-  // Phone border
-  document.getElementById('phone1').style.borderColor = d ? '#333' : '#ddd';
-
-  // Onboarding
-  document.getElementById('onboGradient').style.background = `linear-gradient(transparent, rgba(0,0,0,0.3), ${bg})`;
-  document.getElementById('onboLogo').style.color = accent2;
-  document.getElementById('onboTitle').style.color = text;
-  document.getElementById('onboDesc').style.color = text2;
-  document.getElementById('onboSkip').style.color = text3;
-  document.getElementById('onboNext').style.background = '#E8832A';
-  document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.style.background = dot.classList.contains('active') ? '#E8832A' : text3;
+function selectSkill(el) {
+  document.querySelectorAll('.skill-card').forEach(c => {
+    c.style.border = 'none';
+    c.style.background = 'var(--bg2)';
   });
-  document.querySelector('.onboarding').style.background = bg;
-
-  // Home
-  document.getElementById('screen-home').style.background = bg;
-  document.getElementById('homeLogo').style.color = accent2;
-  document.getElementById('homeSearchIcon').style.background = bg3;
-  document.getElementById('homeGreeting').style.color = text;
-
-  // Categories
-  document.querySelectorAll('.cat-pill').forEach((pill, i) => {
-    if (i === 0) {
-      pill.style.background = '#E8832A';
-      pill.style.borderColor = '#E8832A';
-      pill.style.color = '#fff';
-    } else {
-      pill.style.background = bg3;
-      pill.style.borderColor = border;
-      pill.style.color = text2;
-    }
-  });
-
-  // Frigo banner
-  document.getElementById('frigoBanner').style.background = 'linear-gradient(135deg, #E8832A, #C46A1A)';
-
-  // Section titles
-  document.querySelectorAll('.section-title').forEach(t => t.style.color = text);
-  document.querySelectorAll('.view-all').forEach(t => t.style.color = text3);
-
-  // Chef
-  document.querySelectorAll('.chef-ring').forEach(r => r.style.borderColor = '#E8832A');
-  document.querySelectorAll('.chef-name').forEach(n => n.style.color = text);
-  document.querySelectorAll('.chef-count').forEach(c => c.style.color = text3);
-
-  // Quick cards
-  document.querySelectorAll('.quick-card').forEach(c => c.style.background = bg2);
-  document.querySelectorAll('.quick-title').forEach(t => t.style.color = text);
-  document.querySelectorAll('.quick-time').forEach(t => t.style.color = text3);
-
-  // Tab bar
-  document.getElementById('tabBar').style.background = tab;
-  document.getElementById('tabBar').style.borderTopColor = border;
-  document.querySelectorAll('.tab-label').forEach(l => l.style.color = text3);
-  document.getElementById('tabHome').style.color = '#E8832A';
-
-  // Recipe detail
-  document.getElementById('screen-recipe').style.background = bg;
-  document.getElementById('recipeHeroGrad').style.background = `linear-gradient(rgba(0,0,0,0.3), transparent 40%, ${bg})`;
-  document.getElementById('recipeChefName').style.color = text2;
-  document.getElementById('recipeRating').style.color = text2;
-  document.getElementById('recipeTitleText').style.color = text;
-  document.getElementById('recipeSubtitleText').style.color = text2;
-
-  // Stats
-  document.getElementById('statsRow').style.background = bg2;
-  document.getElementById('statsRow').style.borderColor = border;
-  document.querySelectorAll('.stat-value').forEach(v => v.style.color = text);
-  document.querySelectorAll('.stat-label-text').forEach(l => l.style.color = text3);
-  document.querySelectorAll('.stat-divider').forEach(d => d.style.background = border);
-
-  // Tab switch
-  document.getElementById('tabSwitch').style.background = bg2;
-  const ingActive = document.getElementById('ingredientsSection').style.display !== 'none';
-  document.getElementById('tabIng').style.background = ingActive ? '#E8832A' : 'transparent';
-  document.getElementById('tabIng').style.color = ingActive ? '#fff' : text3;
-  document.getElementById('tabDir').style.background = ingActive ? 'transparent' : '#E8832A';
-  document.getElementById('tabDir').style.color = ingActive ? text3 : '#fff';
-
-  // Ingredients
-  document.getElementById('ingCount').style.color = text2;
-  document.querySelectorAll('.ingredient-row').forEach(r => {
-    r.style.background = bg2;
-    r.style.borderColor = border;
-  });
-  document.querySelectorAll('.ing-emoji').forEach(e => e.style.background = bg3);
-  document.querySelectorAll('.ing-name').forEach(n => n.style.color = text);
-  document.querySelectorAll('.ing-qty').forEach(q => q.style.color = text3);
-  document.querySelectorAll('.ing-check').forEach(c => { c.style.borderColor = text3; });
-
-  // Grocery btn
-  document.getElementById('groceryBtn').style.borderColor = '#E8832A';
-  document.getElementById('groceryBtn').style.color = '#E8832A';
-  document.getElementById('groceryBtn').style.background = bg3;
-
-  // Directions
-  document.querySelectorAll('.direction-text').forEach(t => t.style.color = text);
-  document.querySelectorAll('.step-time').forEach(t => t.style.color = text3);
-  document.querySelectorAll('.timer-btn').forEach(b => { b.style.background = bg3; b.style.color = '#E8832A'; });
-
-  // Gallery
-  document.getElementById('galTitle').style.color = text;
-  document.getElementById('galViewAll').style.color = text3;
-
-  // Nutrition
-  document.getElementById('nutCard').style.background = bg2;
-  document.getElementById('nutCard').style.borderColor = border;
-  document.getElementById('nutTitle').style.color = text;
-  document.querySelectorAll('.nut-value').forEach((v, i) => { if (i > 0) v.style.color = text; });
-  document.querySelectorAll('.nut-label').forEach(l => l.style.color = text3);
-
-  // Cooking bar
-  document.getElementById('cookBar').style.background = bg;
+  el.style.border = '1px solid var(--accent)';
+  el.style.background = 'rgba(232,131,42,0.1)';
 }
 
-// Initial apply
-applyMode();
+function showRecipeTab(tab) {
+  const btns = document.querySelectorAll('#recipe-tabs .toggle-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (tab === 'ingredients') {
+    btns[0].classList.add('active');
+    document.getElementById('recipe-ingredients').style.display = 'block';
+    document.getElementById('recipe-directions').style.display = 'none';
+  } else {
+    btns[1].classList.add('active');
+    document.getElementById('recipe-ingredients').style.display = 'none';
+    document.getElementById('recipe-directions').style.display = 'block';
+  }
+}
 
-// Make top control buttons work
-document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const screenName = this.textContent.toLowerCase().replace(' detail', '');
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + screenName).classList.add('active');
-    document.querySelectorAll('.controls button:not(.mode-toggle)').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById('phoneScreen').scrollTop = 0;
-  });
-});
+// Init
+updateTabBar();
 </script>
-
 </body>
 </html>
